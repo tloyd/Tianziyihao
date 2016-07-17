@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">田字一号</string>
+    <string name="index_search_edit_hint">输入关键字搜索商品</string>
+    <string name="limit_purchase">限时抢购</string>
+    <string name="left">剩余</string>
+</resources>

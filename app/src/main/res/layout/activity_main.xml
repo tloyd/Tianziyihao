@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#ff586f0c"
+              android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <View
+        android:id="@+id/menu_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/rg_tab"
+        android:background="@color/bg_Gray"
+        />
+
+    <RadioGroup
+        android:id="@+id/rg_tab"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:background="#fafafa"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_home"
+            android:checked="true"
+            style="@style/RadioButtonBottomTab"
+            android:drawableTop="@drawable/icon_home"
+            android:text="首页"/>
+
+        <RadioButton
+
+            android:id="@+id/rb_activity"
+            style="@style/RadioButtonBottomTab"
+            android:drawableTop="@drawable/icon_meassage"
+            android:text="活动"/>
+
+        <RadioButton
+            android:id="@+id/rb_class"
+            style="@style/RadioButtonBottomTab"
+            android:drawableTop="@drawable/icon_square"
+            android:text="商品分类"/>
+
+        <RadioButton
+            android:id="@+id/rb_cart"
+            style="@style/RadioButtonBottomTab"
+            android:drawableTop="@drawable/icon_cart"
+            android:text="购物车"/>
+
+        <RadioButton
+            android:id="@+id/rb_me"
+            style="@style/RadioButtonBottomTab"
+            android:drawableTop="@drawable/icon_selfinfo"
+            android:text="会员中心"/>
+    </RadioGroup>
+
+</LinearLayout>
