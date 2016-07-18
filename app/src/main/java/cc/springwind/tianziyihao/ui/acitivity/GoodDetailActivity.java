@@ -19,15 +19,19 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
+import cc.springwind.tianziyihao.bean.CartInfo;
 import cc.springwind.tianziyihao.bean.GoodDetailInfo;
+import cc.springwind.tianziyihao.dao.CartDao;
 import cc.springwind.tianziyihao.dao.FakeDao;
 import cc.springwind.tianziyihao.dialog.ShareDialogFragment;
 import cc.springwind.tianziyihao.global.BaseActivity;
+import cc.springwind.tianziyihao.utils.ToastUtil;
 
 /**
  * Created by HeFan on 2016/7/14.
@@ -204,6 +208,9 @@ public class GoodDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ib_cart:
+                // TODO: 2016/7/18 0018 詳情界面跳轉至購物車界面的做法
+                setResult(RESULT_OK);
+                finish();
                 break;
             case R.id.btn_share:
                 ShareDialogFragment shareDialogFragment = new ShareDialogFragment();
@@ -226,7 +233,24 @@ public class GoodDetailActivity extends BaseActivity {
     }
 
     private void add2Cart() {
-
+        CartDao instance = CartDao.getInstance(getApplicationContext());
+        List<CartInfo> all = instance.findAll();
+        for (CartInfo cartInfo :
+                all) {
+            if (id.equals(cartInfo.good_id)){
+                instance.update(id,++cartInfo.count);
+                ToastUtil.showToast(getApplicationContext(),"添加到購物車:"+cartInfo.count+++"件");
+                return;
+            }
+        }
+        CartInfo info = new CartInfo();
+        info.count=1;
+        info.good_id=id;
+        info.good_name=goodDetailInfo.good_name;
+        info.good_price=goodDetailInfo.price;
+        info.good_img_url=goodDetailInfo.reveal_img_urls.get(0);
+        instance.insert(info);
+        ToastUtil.showToast(getApplicationContext(),"添加到購物車:1件");
     }
 
     private class RevealImageAdapter extends PagerAdapter {

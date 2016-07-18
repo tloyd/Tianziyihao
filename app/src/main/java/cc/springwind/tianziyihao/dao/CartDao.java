@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.springwind.tianziyihao.bean.CartInfo;
-import cc.springwind.tianziyihao.db.CartDBHelp;
+import cc.springwind.tianziyihao.db.TZYHDBHelp;
 
 /**
  * Created by HeFan on 2016/7/3.
  */
 public class CartDao {
-    private CartDBHelp mCartDBHelp;
+    private TZYHDBHelp mTZYHDBHelp;
     private static CartDao mCartDao= null;
 
     private CartDao(Context context) {
-        mCartDBHelp = new CartDBHelp(context);
+        mTZYHDBHelp = new TZYHDBHelp(context);
     }
 
     public static CartDao getInstance(Context context) {
@@ -29,43 +29,59 @@ public class CartDao {
         return mCartDao;
     }
 
-    public void insert(String phone, String mode) {
+    /*public String good_id;
+    public String good_name;
+    public String good_img_url;
+    public String good_price;
+    public int count;*/
+
+    public void insert(CartInfo info) {
         //1,开启数据库,准备做写入操作
-        SQLiteDatabase db = mCartDBHelp.getWritableDatabase();
+        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("phone", phone);
-        values.put("mode", mode);
-        db.insert("blacknumber", null, values);
+        values.put("good_id",info.good_id);
+        values.put("good_name",info.good_name);
+        values.put("good_price",info.good_price);
+        values.put("good_img_url",info.good_img_url);
+        values.put("count",info.count);
+        db.insert("cart", null, values);
 
         db.close();
     }
 
-    public void delete(String phone) {
-        SQLiteDatabase db = mCartDBHelp.getWritableDatabase();
+    public void delete(String good_id) {
+        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
 
-        db.delete("blacknumber", "phone = ?", new String[]{phone});
+        db.delete("cart", "good_id = ?", new String[]{good_id});
 
         db.close();
     }
 
-    public void update(String phone, String mode) {
-        SQLiteDatabase db = mCartDBHelp.getWritableDatabase();
+    public void update(String good_id,int count) {
+        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("mode", mode);
+        contentValues.put("count", count);
 
-        db.update("blacknumber", contentValues, "phone = ?", new String[]{phone});
+        db.update("cart", contentValues, "good_id = ?", new String[]{good_id});
 
         db.close();
     }
 
     public List<CartInfo> findAll() {
-        SQLiteDatabase db = mCartDBHelp.getWritableDatabase();
+        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
 
-        Cursor cursor = db.query("blacknumber", new String[]{"phone", "mode"}, null, null, null, null, "_id desc");
-        List<CartInfo> mList = new ArrayList<CartInfo>();
+        Cursor cursor = db.query("cart", null, null, null, null, null, "_id desc");
+        List<CartInfo> mList = new ArrayList<>();
         while (cursor.moveToNext()) {
+            CartInfo cartInfo = new CartInfo();
+            cartInfo.count=cursor.getInt(cursor.getColumnIndex("count"));
+            cartInfo.good_id=cursor.getString(cursor.getColumnIndex("good_id"));
+            cartInfo.good_name=cursor.getString(cursor.getColumnIndex("good_name"));
+            cartInfo.good_price=cursor.getString(cursor.getColumnIndex("good_price"));
+            cartInfo.good_img_url=cursor.getString(cursor.getColumnIndex("good_img_url"));
+            mList.add(cartInfo);
         }
         cursor.close();
         db.close();

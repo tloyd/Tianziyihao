@@ -22,12 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.springwind.tianziyihao.R;
+import cc.springwind.tianziyihao.bean.Constants;
 import cc.springwind.tianziyihao.dao.FakeDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
-import cc.springwind.tianziyihao.widget.WrapHeightExpandableListView;
 import cc.springwind.tianziyihao.widget.GoodListItem;
 import cc.springwind.tianziyihao.widget.GoodListTitle;
+import cc.springwind.tianziyihao.widget.WrapHeightExpandableListView;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
 /**
@@ -113,7 +114,7 @@ public class HomeFragment extends BaseFragment {
                 public void onClick(View v) {
                     Intent intent= new Intent(getContext(), GoodDetailActivity.class);
                     intent.putExtra("id",getItem(position).id);
-                    startActivity(intent);
+                    getActivity().startActivityForResult(intent, Constants.RETURN_TO_CART);
                 }
             });
             return goodListItem;
@@ -162,6 +163,11 @@ public class HomeFragment extends BaseFragment {
                 ButterKnife.inject(this, view);
             }
         }*/
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     }
 
     private void initEListView() {
