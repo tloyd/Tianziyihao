@@ -3,4 +3,12 @@
     <string name="index_search_edit_hint">输入关键字搜索商品</string>
     <string name="limit_purchase">限时抢购</string>
     <string name="left">剩余</string>
+    <string name="weibosdk_demo_toast_auth_success">授权成功</string>
+    <string name="weibosdk_demo_toast_auth_failed">授权失败</string>
+    <string name="weibosdk_demo_toast_auth_canceled">取消授权</string>
+    <string name="weibosdk_demo_share_to_weibo_title">分享微博</string>
+    <string name="weibosdk_demo_share_text_title">分享文字</string>
+    <string name="weibosdk_demo_share_default_text">欢迎使用新浪微博 SDK</string>
+    <string name="weibosdk_demo_share_image_title">分享图片</string>
+    <string name="weibosdk_demo_share_to">分  享</string>
 </resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ib_share_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_menu_revert"/>
+
+        <TextView
+            android:id="@+id/share_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/weibosdk_demo_share_to_weibo_title"
+            android:textSize="20sp"/>
+        
+        <Button
+            android:background="@color/bg_White"
+            android:layout_width="wrap_content"
+            android:text="分享"
+            android:id="@+id/btn_get_share"
+            android:layout_height="match_parent"/>
+
+
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_share"
+        android:gravity="start"
+        android:hint="分享到微博..."
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

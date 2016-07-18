@@ -74,4 +74,6 @@ public class FragmentController {
     public static void onDestroy() {
         controller = null;
     }
+
+
 }

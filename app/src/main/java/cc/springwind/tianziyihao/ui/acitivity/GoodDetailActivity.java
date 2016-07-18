@@ -1,6 +1,6 @@
 package cc.springwind.tianziyihao.ui.acitivity;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,9 +17,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.sina.weibo.sdk.api.TextObject;
-import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
-import com.sina.weibo.sdk.openapi.StatusesAPI;
 
 import java.util.ArrayList;
 
@@ -27,7 +24,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.Constants;
 import cc.springwind.tianziyihao.bean.GoodDetailInfo;
 import cc.springwind.tianziyihao.dao.FakeDao;
 import cc.springwind.tianziyihao.dialog.ShareDialogFragment;
@@ -75,7 +71,6 @@ public class GoodDetailActivity extends BaseActivity {
     };
     private GoodDetailInfo goodDetailInfo;
     private FakeDao fakeDao;
-    private IWeiboShareAPI mWeiboShareAPI;
 
 
     @Override
@@ -87,24 +82,16 @@ public class GoodDetailActivity extends BaseActivity {
         updataUI();
         initData();
 
-        initWeiboShare();
     }
 
-    private void initWeiboShare() {
-        new StatusesAPI(this, Constants.APP_KEY);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case 1001:
+
+                break;
+        }
     }
-
-    private TextObject getTextObj() {
-        TextObject textObject = new TextObject();
-        textObject.text = getSharedText();
-        return textObject;
-    }
-
-    private String getSharedText() {
-
-        return "share weibo";
-    }
-
 
     private void updataUI() {
         if (goodDetailInfo == null) {
@@ -231,10 +218,15 @@ public class GoodDetailActivity extends BaseActivity {
             case R.id.btn_service:
                 break;
             case R.id.tv_add_to_cart:
+                add2Cart();
                 break;
             case R.id.tv_buy_now:
                 break;
         }
+    }
+
+    private void add2Cart() {
+
     }
 
     private class RevealImageAdapter extends PagerAdapter {

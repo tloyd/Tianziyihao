@@ -28,6 +28,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         rgTab.setOnCheckedChangeListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -58,6 +63,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        FragmentController.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         FragmentController.onDestroy();
     }
 }

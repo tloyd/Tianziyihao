@@ -17,7 +17,7 @@ import cc.springwind.tianziyihao.bean.GoodDetailInfo;
 /**
  * Created by HeFan on 2016/7/12.
  */
-public class FakeDao {
+public class FakeDao implements Serializable{
     static String jsonStrOfHomeGroupLists = "[\n" +
             "{\n" +
             "\"name\":\"生鲜肉类\",\n" +
@@ -361,7 +361,7 @@ public class FakeDao {
         public List<SecondLevelGroup> groupList;
     }
 
-    public class SecondLevelGroup {
+    public class SecondLevelGroup implements Serializable{
         public String id;
         public String name;
         public String url;
