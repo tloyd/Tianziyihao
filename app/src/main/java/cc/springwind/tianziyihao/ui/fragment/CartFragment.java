@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -44,6 +44,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     private List<CartInfo> cartInfoList;
     private CartListAdapter cartListAdapter;
     private float sum = 0.0f;
+    protected DecimalFormat decimalFormat;
 
     //    private BigDecimal sum=new BigDecimal(0.0f);
     @Nullable
@@ -52,6 +53,8 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
             savedInstanceState) {
         view = View.inflate(activity, R.layout.fragment_cart, null);
         ButterKnife.inject(this, view);
+        decimalFormat = new DecimalFormat("0.0");
+        activity.return_flag=false;
         initData();
         initUI();
         return view;
@@ -89,18 +92,21 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                             int position = (Integer) tag;
                             if (isChecked) {
                                 // TODO: 2016/7/19 0019 计算有误
-                                sum += cartInfoList.get(position).count * Float.parseFloat(cartInfoList.get(position)
+                                sum += (float) cartInfoList.get(position).count * Float.parseFloat(cartInfoList.get
+                                        (position)
                                         .good_price);
-                                tvSum.setText(sum + "");
+                                tvSum.setText(decimalFormat.format(sum) + "");
                                 /*sum.add(new BigDecimal(cartInfoList.get(position).count).multiply(new BigDecimal(Float
                                         .parseFloat(cartInfoList.get(position).good_price))));
                                 float v = sum.floatValue();
                                 tvSum.setText(v+"");*/
                             } else {
-                                sum -= cartInfoList.get(position).count * Float.parseFloat(cartInfoList.get(position)
+                                sum -= (float) cartInfoList.get(position).count * Float.parseFloat(cartInfoList.get
+                                        (position)
                                         .good_price);
-                                tvSum.setText(sum + "");
-                                /*sum.subtract(new BigDecimal(cartInfoList.get(position).count).multiply(new BigDecimal(Float
+                                tvSum.setText(decimalFormat.format(sum) + "");
+                                /*sum.subtract(new BigDecimal(cartInfoList.get(position).count).multiply(new
+                                BigDecimal(Float
                                         .parseFloat(cartInfoList.get(position).good_price))));
                                 float v = sum.floatValue();
                                 tvSum.setText(v+"");*/
@@ -153,8 +159,10 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
             viewHolder.proCount.setText(item.count + "");
             viewHolder.tvCartItemPrice.setText(item.good_price);
             viewHolder.tvCartItemCount.setText(item.count + "");
-            viewHolder.tvItemSum.setText(new BigDecimal(Float.parseFloat(item.good_price)).multiply(new BigDecimal(item.count)) + "");
-//            viewHolder.tvItemSum.setText(Float.parseFloat("16.1") * item.count + "");
+//            viewHolder.tvItemSum.setText(new BigDecimal(Float.parseFloat(item.good_price)).multiply(new BigDecimal
+// (item.count)) + "");
+
+            viewHolder.tvItemSum.setText(decimalFormat.format(Float.parseFloat("16.1") * (float) item.count) + "");
 
             viewHolder.proAdd.setTag(position);
             viewHolder.proReduce.setTag(position);

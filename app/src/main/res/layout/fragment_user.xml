@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/tv_Gray"
+              android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/tv_Gray"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@color/lawngreen"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="会员中心"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:background="@drawable/pay_ad"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <cc.springwind.tianziyihao.widget.CircleImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/hugh"
+                    app:civ_border_color="@color/bg_Gray"
+                    app:civ_border_width="2dp"/>
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="farm001"
+                    android:textColor="@color/tv_Black"
+                    android:textSize="@dimen/large_text_size"/>
+
+                <TextView
+                    android:id="@+id/tv_user_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="15705990805"
+                    android:textColor="@color/tv_White"
+                    android:textSize="@dimen/medium_text_size"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:background="@color/bg_alpha_green"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="商品收藏"/>
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/bg_Gray"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="商品收藏"/>
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/bg_Gray"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="商品收藏"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--<LinearLayout
+                android:id="@+id/ll_my_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="@color/bg_White"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/sym_action_email"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="我的订单"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:gravity="right|center_vertical"
+                    android:text="查看全部订单  >  "/>
+            </LinearLayout>-->
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_check_all_orders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="我的订单"
+                app:tbi_tv_right="查看全部订单"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@color/bg_White"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
+
+                <Button
+                    android:id="@+id/btn_wait_for_take"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableTop="@android:drawable/sym_action_email"
+                    android:text="待自提"
+                    android:textColor="@color/tv_dark_Gray"/>
+
+                <Button
+                    android:id="@+id/btn_wait_for_receive"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableTop="@android:drawable/sym_action_email"
+                    android:text="待收货"
+                    android:textColor="@color/tv_dark_Gray"/>
+
+                <Button
+                    android:id="@+id/btn_wait_for_comment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableTop="@android:drawable/sym_action_email"
+                    android:text="待评价"
+                    android:textColor="@color/tv_dark_Gray"/>
+
+                <Button
+                    android:id="@+id/btn_apply_for_sercive"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableTop="@android:drawable/sym_action_email"
+                    android:text="申请售后"
+                    android:textColor="@color/tv_dark_Gray"/>
+
+                <Button
+                    android:id="@+id/btn_wait_for_pay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableTop="@android:drawable/sym_action_email"
+                    android:text="待付款"
+                    android:textColor="@color/tv_dark_Gray"/>
+            </LinearLayout>
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_my_property"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="我的资产"
+                app:tbi_tv_right="查看余额明细"
+                />
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="收货地址"
+                app:tbi_tv_right="自提点、收货地址管理"
+                />
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="1dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="密码修改"
+                app:tbi_tv_right="密码修改,重置"
+                />
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="1dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="分享有礼"
+                app:tbi_tv_right="邀请朋友获得积分"
+                />
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="1dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="帮助中心"
+                app:tbi_tv_right="操作事项"
+                />
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_about_us"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="关于我们"
+                app:tbi_tv_right="了解天字一号"
+                />
+
+            <cc.springwind.tianziyihao.widget.TextButtonItem
+                android:id="@+id/tbi_clear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="1dp"
+                app:tbi_iv_left="@android:drawable/sym_action_email"
+                app:tbi_iv_right="@android:drawable/sym_action_email"
+                app:tbi_tv_left="清除缓存"
+                app:tbi_tv_right="点击清除"
+                />
+
+            <Button
+                android:id="@+id/btn_log_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/btn_bg"
+                android:text="退出登录"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

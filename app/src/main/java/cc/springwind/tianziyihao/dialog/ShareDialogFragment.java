@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.token.AccessTokenKeeper;
-import cc.springwind.tianziyihao.ui.acitivity.LoginActivity;
+import cc.springwind.tianziyihao.ui.acitivity.WeiboLoginActivity;
 import cc.springwind.tianziyihao.ui.acitivity.SharedWeiboActivity;
 
 /**
@@ -73,7 +73,7 @@ public class ShareDialogFragment extends DialogFragment {
 
             }
             if (msg.what == WHAT_INTENT2LOGIN) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                Intent intent = new Intent(getActivity(), WeiboLoginActivity.class);
                 getActivity().startActivity(intent);
                 dismiss();
             }

@@ -112,13 +112,19 @@
 
             </LinearLayout>
 
-            <cc.springwind.tianziyihao.widget.WrapHeightGridView
+            <!--<cc.springwind.tianziyihao.widget.WrapHeightGridView
                 android:id="@+id/gv_limit_home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:numColumns="3"
                 android:stretchMode="columnWidth"
-                />
+                />-->
+
+            <LinearLayout
+                android:id="@+id/ll_gv_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

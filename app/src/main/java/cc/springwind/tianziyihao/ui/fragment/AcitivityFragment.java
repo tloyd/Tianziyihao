@@ -17,6 +17,7 @@ public class AcitivityFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
+        activity.return_flag = false;
         return View.inflate(activity, R.layout.fragment_activity, null);
     }
 }

@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 /**
  * Created by Administrator on 2016/6/6 0006.
  */
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity {
     public String TAG;
     protected BaseApplication application;
     protected SharedPreferences sp;
@@ -19,15 +19,23 @@ public class BaseActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TAG=this.getClass().getSimpleName();//得到当前类的简单类名
+        TAG = this.getClass().getSimpleName();//得到当前类的简单类名
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        this.application= (BaseApplication) getApplication();
-        sp=getSharedPreferences(CommonConstants.SP_NAME,MODE_PRIVATE);
+        this.application = (BaseApplication) getApplication();
+        sp = getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
     }
 
-    public void intent2Activity(Class <? extends Activity> targetActivity){
-        Intent intent=new Intent(this,targetActivity);
+    public void intent2Activity(Class<? extends Activity> targetActivity) {
+        Intent intent = new Intent(this, targetActivity);
         startActivity(intent);
+    }
+
+    public boolean return_flag=false;
+    protected int[] array = new int[2];
+
+    protected void arrayCopy(int lastPosition) {
+        System.arraycopy(array, 1, array, 0, array.length - 1);
+        array[array.length - 1] = lastPosition;
     }
 }

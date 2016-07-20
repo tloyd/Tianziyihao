@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.PrintWriter;
 
 import cc.springwind.tianziyihao.R;
+import cn.smssdk.SMSSDK;
 
 /**
  * Created by Administrator on 2016/6/6 0006.
@@ -55,5 +56,7 @@ public class BaseApplication extends Application {
                 .discCacheFileNameGenerator(new Md5FileNameGenerator()).tasksProcessingOrder(QueueProcessingType
                         .LIFO).build();
         ImageLoader.getInstance().init(config);
+
+        SMSSDK.initSDK(this, "1527210805158", "0d8015638bbd0c040f0814c435e1214a");
     }
 }

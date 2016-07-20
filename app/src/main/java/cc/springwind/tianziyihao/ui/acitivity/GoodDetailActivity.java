@@ -31,6 +31,7 @@ import cc.springwind.tianziyihao.dao.CartDao;
 import cc.springwind.tianziyihao.dao.FakeDao;
 import cc.springwind.tianziyihao.dialog.ShareDialogFragment;
 import cc.springwind.tianziyihao.global.BaseActivity;
+import cc.springwind.tianziyihao.ui.fragment.FragmentController;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 
 /**
@@ -209,7 +210,9 @@ public class GoodDetailActivity extends BaseActivity {
                 break;
             case R.id.ib_cart:
                 // TODO: 2016/7/18 0018 詳情界面跳轉至購物車界面的做法
-                setResult(RESULT_OK);
+//                setResult(RESULT_OK);
+                FragmentController controller = FragmentController.getInstance(this, R.id.fl_content);
+                controller.showFragment(0);
                 finish();
                 break;
             case R.id.btn_share:

@@ -28,6 +28,11 @@ public class TZYHDBHelp extends SQLiteOpenHelper {
                 "good_name varchar(20), " +
                 "good_img_url text," +
                 "good_price text);");*/
+        db.execSQL("create table userinfo " +
+                "(_id integer primary key autoincrement , " +
+                "username varchar(20)," +
+                "password varchar(20));");
+
     }
 
     @Override

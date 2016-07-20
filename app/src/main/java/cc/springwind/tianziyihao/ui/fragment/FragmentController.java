@@ -40,11 +40,11 @@ public class FragmentController {
         fragments.add(new AcitivityFragment());
         fragments.add(new ClassifyFragment());
         fragments.add(new CartFragment());
-        fragments.add(new MeFragment());
+        fragments.add(new UserFragment());
 
         FragmentTransaction ft = manager.beginTransaction();
         for(Fragment fragment : fragments) {
-            ft.add(containerId, fragment);
+            ft.add(containerId, fragment,fragment.getClass().getName());
         }
         ft.commit();
     }

@@ -7,4 +7,16 @@
         <attr name="attrs_tvGoodPrice" format="string"/>
         <attr name="attrs_tvGoodPriceOrigin" format="string"/>
     </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension"/>
+        <attr name="civ_border_color" format="color"/>
+        <attr name="civ_border_overlay" format="boolean"/>
+        <attr name="civ_fill_color" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="cc.springwind.tianziyihao.widget.TextButtonItem">
+        <attr name="tbi_iv_left" format="reference"/>
+        <attr name="tbi_tv_left" format="string"/>
+        <attr name="tbi_tv_right" format="string"/>
+        <attr name="tbi_iv_right" format="reference"/>
+    </declare-styleable>
 </resources>

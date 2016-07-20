@@ -50,6 +50,7 @@ public class ClassifyFragment extends BaseFragment {
             savedInstanceState) {
         View view = View.inflate(activity, R.layout.fragment_class, null);
         ButterKnife.inject(this, view);
+        activity.return_flag=false;
 
         initUI();
         return view;
@@ -129,6 +130,9 @@ public class ClassifyFragment extends BaseFragment {
                 textView.setBackgroundColor(getResources().getColor(R.color.bg_Gray_light));
             }
             textView.setText(getItem(position).name);
+            textView.setPadding(5,10,5,10);
+            textView.setTextColor(getResources().getColor(R.color.bg_Black));
+            textView.setTextSize(20);
             return textView;
         }
     }

@@ -21,7 +21,7 @@ import cc.springwind.tianziyihao.token.AccessTokenKeeper;
 /**
  * Created by HeFan on 2016/7/17.
  */
-public class LoginActivity extends BaseActivity {
+public class WeiboLoginActivity extends BaseActivity {
     private LoginButton mLoginBtnDefault;
     /**
      * 封装了 "access_token"，"expires_in"，"refresh_token"，并提供了他们的管理功能
@@ -87,8 +87,8 @@ public class LoginActivity extends BaseActivity {
 //                intent2Activity(MainActivity.class);
 
                 // 保存 Token 到 SharedPreferences
-                AccessTokenKeeper.writeAccessToken(LoginActivity.this, mAccessToken);
-                Toast.makeText(LoginActivity.this,
+                AccessTokenKeeper.writeAccessToken(WeiboLoginActivity.this, mAccessToken);
+                Toast.makeText(WeiboLoginActivity.this,
                         R.string.weibosdk_demo_toast_auth_success, Toast.LENGTH_SHORT).show();
             } else {
                 // 以下几种情况，您会收到 Code：
@@ -100,19 +100,19 @@ public class LoginActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(code)) {
                     message = message + "\nObtained the code: " + code;
                 }
-                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(WeiboLoginActivity.this, message, Toast.LENGTH_LONG).show();
             }
         }
 
         @Override
         public void onCancel() {
-            Toast.makeText(LoginActivity.this,
+            Toast.makeText(WeiboLoginActivity.this,
                     R.string.weibosdk_demo_toast_auth_canceled, Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onWeiboException(WeiboException e) {
-            Toast.makeText(LoginActivity.this,
+            Toast.makeText(WeiboLoginActivity.this,
                     "Auth exception : " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }

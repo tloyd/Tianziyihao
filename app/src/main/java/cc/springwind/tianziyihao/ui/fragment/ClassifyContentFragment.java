@@ -35,6 +35,7 @@ public class ClassifyContentFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity.return_flag=false;
 
         classifyGroup = (FakeDao.ClassifyGroup) getArguments().getSerializable("tag");
         groupList = classifyGroup.groupList;

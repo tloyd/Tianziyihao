@@ -17,6 +17,7 @@ public class BaseFragment extends Fragment {
 
         activity= (BaseActivity) getActivity();
         application= (BaseApplication) getActivity().getApplication();
+
     }
 
 }

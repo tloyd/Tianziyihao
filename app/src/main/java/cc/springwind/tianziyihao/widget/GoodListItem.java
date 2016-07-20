@@ -48,7 +48,9 @@ public class GoodListItem extends LinearLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int heightSpec = MeasureSpec.makeMeasureSpec(
+                Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
+        super.onMeasure(widthMeasureSpec, heightSpec);
     }
 
     private void initUI() {

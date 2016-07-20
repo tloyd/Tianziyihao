@@ -56,6 +56,8 @@ public class ClassifyListFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fakeDao = new FakeDao();
+        activity.return_flag=false;
+
         goodSimpleInfoList = fakeDao.getClassifyGoodListBySortType("default");
     }
 
