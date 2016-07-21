@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by HeFan on 2016/7/18.
  */
-public class TZYHDBHelp extends SQLiteOpenHelper {
+public class DBHelp extends SQLiteOpenHelper {
 
-    public TZYHDBHelp(Context context) {
+    public DBHelp(Context context) {
         super(context, "tzyh.db", null, 1);
     }
 

@@ -209,8 +209,6 @@ public class GoodDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ib_cart:
-                // TODO: 2016/7/18 0018 詳情界面跳轉至購物車界面的做法
-//                setResult(RESULT_OK);
                 FragmentController controller = FragmentController.getInstance(this, R.id.fl_content);
                 controller.showFragment(0);
                 finish();

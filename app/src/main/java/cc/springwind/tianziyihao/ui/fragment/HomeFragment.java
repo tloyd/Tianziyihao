@@ -189,11 +189,7 @@ public class HomeFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.index_top_logo:
-                // TODO: 2016/7/19 fragment内部跳转到另外一个fragment
-
                 if (!SpUtil.getBoolean(getContext(), Constants.IS_LOGIN, false)) {
-                    /*activity.getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new
-                            LoginFragment()).commit();*/
                     getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new
                             LoginFragment(), "LoginFragment").addToBackStack("LoginFragment").commit();
                 } else {

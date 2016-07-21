@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.springwind.tianziyihao.bean.CartInfo;
-import cc.springwind.tianziyihao.db.TZYHDBHelp;
+import cc.springwind.tianziyihao.db.DBHelp;
 
 /**
  * Created by HeFan on 2016/7/3.
  */
 public class CartDao {
-    private TZYHDBHelp mTZYHDBHelp;
+    private DBHelp mDBHelp;
     private static CartDao mCartDao= null;
 
     private CartDao(Context context) {
-        mTZYHDBHelp = new TZYHDBHelp(context);
+        mDBHelp = new DBHelp(context);
     }
 
     public static CartDao getInstance(Context context) {
@@ -37,7 +37,7 @@ public class CartDao {
 
     public void insert(CartInfo info) {
         //1,开启数据库,准备做写入操作
-        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("good_id",info.good_id);
@@ -51,7 +51,7 @@ public class CartDao {
     }
 
     public void delete(String good_id) {
-        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
 
         db.delete("cart", "good_id = ?", new String[]{good_id});
 
@@ -59,7 +59,7 @@ public class CartDao {
     }
 
     public void update(String good_id,int count) {
-        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("count", count);
@@ -70,7 +70,7 @@ public class CartDao {
     }
 
     public List<CartInfo> findAll() {
-        SQLiteDatabase db = mTZYHDBHelp.getWritableDatabase();
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
 
         Cursor cursor = db.query("cart", null, null, null, null, null, "_id desc");
         List<CartInfo> mList = new ArrayList<>();

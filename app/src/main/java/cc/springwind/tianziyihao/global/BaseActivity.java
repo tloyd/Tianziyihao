@@ -19,7 +19,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TAG = this.getClass().getSimpleName();//得到当前类的简单类名
+        TAG = this.getClass().getSimpleName() + "-->>";//得到当前类的简单类名
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         this.application = (BaseApplication) getApplication();
@@ -31,8 +31,8 @@ public class BaseActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public boolean return_flag=false;
-    protected int[] array = new int[2];
+    public boolean return_flag = false;
+    public int[] array = new int[2];
 
     protected void arrayCopy(int lastPosition) {
         System.arraycopy(array, 1, array, 0, array.length - 1);

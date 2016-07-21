@@ -1,19 +1,31 @@
 package cc.springwind.tianziyihao.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.sina.weibo.sdk.utils.MD5;
+
+import java.util.HashMap;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
+import cc.springwind.tianziyihao.bean.Constants;
+import cc.springwind.tianziyihao.dao.UserDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
+import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
+import cc.springwind.tianziyihao.utils.SpUtil;
 import cc.springwind.tianziyihao.utils.TextCheckUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 import cn.smssdk.EventHandler;
@@ -21,7 +33,7 @@ import cn.smssdk.SMSSDK;
 
 /**
  * Created by HeFan on 2016/7/20.
- *
+ * <p/>
  * 注册界面
  */
 public class RegisterFragment extends BaseFragment {
@@ -36,6 +48,28 @@ public class RegisterFragment extends BaseFragment {
     @InjectView(R.id.btn_register)
     Button btnRegister;
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case ALREADY_REGISTER:
+                    ToastUtil.showToast(getContext(), "已注册,无需重新注册");
+                    break;
+                case SEND_SUCCESS:
+                    ToastUtil.showToast(getContext(), "发送成功,60秒后重新发送");
+                    break;
+                case DO_REGISTER:
+                    register(phone);
+                    break;
+            }
+        }
+    };
+
+    private static final int ALREADY_REGISTER = 1001;
+    private static final int SEND_SUCCESS = 1002;
+    private static final int DO_REGISTER = 1003;
+    private String phone;
+
     EventHandler eh = new EventHandler() {
 
         @Override
@@ -46,16 +80,17 @@ public class RegisterFragment extends BaseFragment {
                 if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                     //提交验证码成功
                     LogUtil.debug(activity.TAG, "EVENT_SUBMIT_VERIFICATION_CODE");
-//                    HashMap<String, Object> map = (HashMap<String, Object>) data;
-
+                    HashMap<String, Object> map = (HashMap<String, Object>) data;
+                    phone = (String) map.get("phone");
+                    mHandler.sendEmptyMessage(DO_REGISTER);
                 } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                     //获取验证码成功
                     Boolean flag = (Boolean) data;
                     if (flag) {
                         LogUtil.debug(activity.TAG, "EVENT_GET_VERIFICATION_CODE");
-                        ToastUtil.showToast(getContext(), "已注册,无需重新注册");
+                        mHandler.sendEmptyMessage(ALREADY_REGISTER);
                     } else {
-                        ToastUtil.showToast(getContext(), "发送成功,60秒后重新发送");
+                        mHandler.sendEmptyMessage(SEND_SUCCESS);
                     }
 
                 } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
@@ -68,6 +103,25 @@ public class RegisterFragment extends BaseFragment {
             }
         }
     };
+
+    private void register(String phone) {
+        String passwordMD5 = MD5.hexdigest(etPassword.getText().toString().trim());
+        UserDao userDao = UserDao.getInstance(getContext());
+        long l = userDao.insert(phone, passwordMD5);
+        if (l != -1) {
+            ToastUtil.showToast(getContext(), "注册成功");
+            SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, true);
+            SpUtil.putString(getContext(), Constants.CURRENT_USER, phone);
+            MainActivity mainActivity = (MainActivity) getActivity();
+            FragmentManager manager = mainActivity.getSupportFragmentManager();
+            // POP_BACK_STACK_INCLUSIVE 该标志位表示在后退栈里的,所有在这个找到的Fragment后面入栈的Fragment,包括这个Fragment,都会被弹出
+            // TODO: 2016/7/21 注册成功直接返回最后一次被点击的页面
+            manager.popBackStack("LoginFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            mainActivity.setRgTabClick(mainActivity.array[1]);
+            LogUtil.debug(activity.TAG,"test");
+        }
+    }
+
     private String phoneNumber;
 
     @Override
@@ -106,11 +160,16 @@ public class RegisterFragment extends BaseFragment {
                 break;
             case R.id.btn_register:
                 String password = etPassword.getText().toString().trim();
-                if (TextCheckUtil.isPassword(password)) {
-                    SMSSDK.submitVerificationCode("86", phoneNumber, etSmsNumber.getText().toString().trim());
-                } else {
+                if (!TextCheckUtil.isPassword(password)) {
                     ToastUtil.showToast(getContext(), "密码格式不正确");
+                    break;
                 }
+                if (TextUtils.isEmpty(etSmsNumber.getText().toString().trim()) || !TextUtils.isDigitsOnly(etSmsNumber
+                        .getText().toString().trim()) || etSmsNumber.getText().toString().trim().length() != 4) {
+                    ToastUtil.showToast(getContext(), "验证码格式错误");
+                    break;
+                }
+                SMSSDK.submitVerificationCode("86", phoneNumber, etSmsNumber.getText().toString().trim());
                 break;
             case R.id.tv_get_support_contries:
                 SMSSDK.getSupportedCountries();

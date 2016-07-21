@@ -1,6 +1,9 @@
 package cc.springwind.tianziyihao.ui.fragment;
 
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +24,11 @@ import cc.springwind.tianziyihao.adapter.CartListAdapter;
 import cc.springwind.tianziyihao.bean.CartInfo;
 import cc.springwind.tianziyihao.dao.CartDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
+import cc.springwind.tianziyihao.utils.LogUtil;
 
 /**
  * Created by HeFan on 2016/7/7.
- *
+ * <p/>
  * 购物车界面
  */
 public class CartFragment extends BaseFragment implements View.OnClickListener {
@@ -43,6 +47,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     private CartListAdapter cartListAdapter;
     private DecimalFormat decimalFormat;
     private float sum = 0.0f;
+    private InnerContentObserver observer;
 
     //    private BigDecimal sum=new BigDecimal(0.0f);
     @Nullable
@@ -53,6 +58,12 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         ButterKnife.inject(this, view);
         activity.return_flag = false;
         decimalFormat = new DecimalFormat("0.0");
+
+        // 注册内容观察者,监听cart表变化,一旦cart表有变化,立刻更新cartInfoList
+        // TODO: 2016/7/21 这个URI是啥?
+        observer = new InnerContentObserver(new Handler());
+        activity.getContentResolver().registerContentObserver(Uri.parse("content://cart/change"), true, observer);
+
         initData();
         initUI();
         return view;
@@ -75,7 +86,6 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
 
     private void initData() {
         cartDao = CartDao.getInstance(getContext());
-        // TODO: 2016/7/19 0019 当点击添加到购物车后，直接去看购物车是看不到数据的，一定要退出程序，再进购物车界面才能看到刚刚添加的数据
         cartInfoList = cartDao.findAll();
         cartListAdapter = new CartListAdapter(this, cartInfoList);
         cartListAdapter.setAddListener(this);
@@ -118,9 +128,24 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        LogUtil.log(activity.TAG, this, "onHiddenChanged");
+        if (hidden) {
+            updateCartDB(cartInfoList);
+        }
+    }
+
+    private void updateCartDB(List<CartInfo> list) {
+        for (CartInfo info : list)
+            cartDao.update(info.good_id, info.count);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+        LogUtil.debug(activity.TAG, "CartFragment-->>onDestroyView");
+        activity.getContentResolver().unregisterContentObserver(observer);
     }
 
     @OnClick({R.id.tv_sum, R.id.tv_pay})
@@ -165,4 +190,22 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    class InnerContentObserver extends ContentObserver {
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public InnerContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            cartInfoList = cartDao.findAll();
+            // TODO: 2016/7/21 日志没有打印,但是数据确实更新了
+            LogUtil.log(activity.TAG,this,"onChange");
+        }
+    }
 }

@@ -26,7 +26,7 @@ import cn.smssdk.gui.RegisterPage;
 
 /**
  * Created by HeFan on 2016/7/20.
- *
+ * <p/>
  * 登录界面
  */
 public class LoginFragment extends BaseFragment {

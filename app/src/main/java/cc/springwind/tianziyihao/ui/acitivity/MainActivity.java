@@ -92,6 +92,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public void onBackPressed() {
         super.onBackPressed();
         if (return_flag){
+            LogUtil.debug(TAG,"performclick-->>"+array[0]);
             setRgTabClick(array[0]);
         }
     }

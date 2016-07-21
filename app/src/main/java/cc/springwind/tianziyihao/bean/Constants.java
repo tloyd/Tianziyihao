@@ -59,4 +59,5 @@ public interface Constants {
                     + "follow_app_official_microblog," + "invitation_write";
     int RETURN_TO_CART = 100;
     String IS_LOGIN = "is_login";
+    String CURRENT_USER = "current_user";
 }
