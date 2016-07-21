@@ -26,6 +26,8 @@ import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
 
 /**
  * Created by HeFan on 2016/7/16.
+ *
+ * 点击分类后显示的分类列表页面
  */
 public class ClassifyListFragment extends BaseFragment {
 

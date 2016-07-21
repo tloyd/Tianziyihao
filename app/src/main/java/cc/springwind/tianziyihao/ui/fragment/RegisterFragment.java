@@ -21,6 +21,8 @@ import cn.smssdk.SMSSDK;
 
 /**
  * Created by HeFan on 2016/7/20.
+ *
+ * 注册界面
  */
 public class RegisterFragment extends BaseFragment {
     @InjectView(R.id.et_username)

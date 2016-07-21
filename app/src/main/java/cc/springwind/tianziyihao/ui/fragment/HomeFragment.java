@@ -1,17 +1,12 @@
 package cc.springwind.tianziyihao.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.BaseAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.GridView;
@@ -19,35 +14,35 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
+import cc.springwind.tianziyihao.adapter.ExpandableAdapter;
+import cc.springwind.tianziyihao.adapter.GridViewAdapter;
+import cc.springwind.tianziyihao.adapter.ViewPagerAdapter;
 import cc.springwind.tianziyihao.bean.Constants;
 import cc.springwind.tianziyihao.dao.FakeDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
-import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
 import cc.springwind.tianziyihao.utils.SpUtil;
-import cc.springwind.tianziyihao.widget.GoodListItem;
-import cc.springwind.tianziyihao.widget.GoodListTitle;
 import cc.springwind.tianziyihao.widget.WrapHeightExpandableListView;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
 /**
  * Created by HeFan on 2016/7/7.
+ *
+ * 首页
  */
 public class HomeFragment extends BaseFragment {
 
     private ViewPager viewPager;
     private View view;
     private ArrayList<ImageView> listOfImageView;
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private ArrayList<String> listOfImageUrl;
+    // 轮播图片的URL地址数组
     private String[] imageUrls = new String[]{
             "http://ww4.sinaimg.cn/mw690/651ebbd5gw1ew4dcw7rwjj20j60cs0vc.jpg", "http://ww2.sinaimg" +
             ".cn/mw690/651ebbd5gw1ew4ddecr4ij21hc0u0tha.jpg", "http://ww1.sinaimg" +
@@ -59,6 +54,7 @@ public class HomeFragment extends BaseFragment {
     private List<FakeDao.HomeGoodGroup> listOfHomeGoodGroup;
     private FakeDao fakeDao;
     private List<FakeDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood;
+    // 设置控制播放标志位
     private boolean isplay = true;
 
     @Nullable
@@ -68,11 +64,11 @@ public class HomeFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_home, null);
         isplay = true;
         initImageUrls();
-        initAdGView();
+        initLimitGridView();
         initImageViewList();
         initDots();
         initViewPager();
-        initEListView();
+        initExpandableListView();
         ButterKnife.inject(this, view);
         return view;
     }
@@ -130,7 +126,7 @@ public class HomeFragment extends BaseFragment {
     /**
      * 初始化显示购买的三个item
      */
-    private void initAdGView() {
+    private void initLimitGridView() {
         fakeDao = new FakeDao();
         listOfHomeLimitPurchaseGood = fakeDao.getHomeLimitPurchaseList();
 //        WrapHeightGridView gv_limit_home = (WrapHeightGridView) view.findViewById(R.id.gv_limit_home);
@@ -139,7 +135,7 @@ public class HomeFragment extends BaseFragment {
 
         LinearLayout ll_gv_limit = (LinearLayout) view.findViewById(R.id.ll_gv_limit);
 
-        GViewAdapter adapter = new GViewAdapter();
+        GridViewAdapter adapter = new GridViewAdapter(this, listOfHomeLimitPurchaseGood);
         gv_limit_home.setPadding(5, 5, 5, 5);
         gv_limit_home.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
         gv_limit_home.setNumColumns(3);
@@ -151,94 +147,10 @@ public class HomeFragment extends BaseFragment {
     }
 
     /**
-     * 显示购买的三个item的GridView的适配器
+     * 设置GridView的高度基于子项自适应
+     *
+     * @param gv_limit_home
      */
-    class GViewAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return listOfHomeLimitPurchaseGood.size();
-        }
-
-        @Override
-        public FakeDao.HomeLimitPurchaseGood getItem(int position) {
-            return listOfHomeLimitPurchaseGood.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            GoodListItem goodListItem = null;
-            if (convertView == null) {
-                goodListItem = new GoodListItem(getContext());
-            } else {
-                goodListItem = (GoodListItem) convertView;
-            }
-            goodListItem.setIvGoodThumb(getItem(position).url);
-            goodListItem.setTvGoodPrice(getItem(position).price);
-            goodListItem.setTvGoodName(getItem(position).name);
-            goodListItem.setTvLimitPurchase(getItem(position).limitPurchase);
-            goodListItem.setTvGoodPriceOrigin(getItem(position).priceOrigin);
-            goodListItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), GoodDetailActivity.class);
-                    intent.putExtra("id", getItem(position).id);
-                    getActivity().startActivityForResult(intent, Constants.RETURN_TO_CART);
-                }
-            });
-            return goodListItem;
-            /*ViewHolder viewHolder = null;
-            if (convertView == null) {
-                convertView = View.inflate(getContext(), R.layout.item_limit_good, null);
-                viewHolder = new ViewHolder(convertView);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-            FakeDao.Limit item = getItem(position);
-
-            ImageLoader instance = ImageLoader.getInstance();
-            instance.displayImage(item.url, viewHolder.ivGoodThumbLimit);
-//            viewHolder.ivGoodThumbLimit.setImageResource(R.drawable.logo);
-            viewHolder.tvGoodNameLimit.setText(item.name);
-            viewHolder.tvGoodPriceLimit.setText(item.price);
-            viewHolder.tvGoodPriceOriginLimit.setText(item.priceOrigin);
-            viewHolder.tvLimitPurchaseLimit.setText(item.limitPurchase);
-            return convertView;*/
-            /*TextView textView=null;
-            if (convertView==null){
-                textView = new TextView(getContext());
-                textView.setText("测试");
-                textView.setTextSize(30);
-            } else {
-                textView= (TextView) convertView;
-            }
-            return textView;*/
-        }
-
-        /*class ViewHolder {
-            @InjectView(R.id.iv_good_thumb_limit)
-            ImageView ivGoodThumbLimit;
-            @InjectView(R.id.tv_limit_purchase_limit)
-            TextView tvLimitPurchaseLimit;
-            @InjectView(R.id.tv_good_name_limit)
-            TextView tvGoodNameLimit;
-            @InjectView(R.id.tv_good_price_limit)
-            TextView tvGoodPriceLimit;
-            @InjectView(R.id.tv_good_price_origin_limit)
-            TextView tvGoodPriceOriginLimit;
-
-            ViewHolder(View view) {
-                ButterKnife.inject(this, view);
-            }
-        }*/
-    }
-
     private void setGridViewHeightBasedOnChildren(WrapHeightGridView gv_limit_home) {
         ListAdapter listAdapter = gv_limit_home.getAdapter();
         if (listAdapter == null) {
@@ -294,16 +206,14 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-    private void initEListView() {
+    /**
+     * 初始化ExpandableListView
+     */
+    private void initExpandableListView() {
         eListView = (WrapHeightExpandableListView) view.findViewById(R.id.elv_home);
 
         listOfHomeGoodGroup = fakeDao.getHomeGoodLists();
-        ExpandableAdapter adapter = new ExpandableAdapter();
+        ExpandableAdapter adapter = new ExpandableAdapter(this, listOfHomeGoodGroup);
         eListView.setAdapter(adapter);
         eListView.setGroupIndicator(null);
         for (int i = 0; i < adapter.getGroupCount(); i++) {
@@ -319,7 +229,12 @@ public class HomeFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
     }
 
-    public static void setListViewHeightBasedOnChildren(ExpandableListView expandableListView) {
+    /**
+     * 设置ExpandableListView的高度基于子项高度自适应,
+     *
+     * @param expandableListView
+     */
+    public void setListViewHeightBasedOnChildren(ExpandableListView expandableListView) {
         // 获取ListView对应的Adapter
         ExpandableListAdapter listAdapter = expandableListView.getExpandableListAdapter();
         if (listAdapter == null) {
@@ -342,130 +257,6 @@ public class HomeFragment extends BaseFragment {
         ViewGroup.LayoutParams params = expandableListView.getLayoutParams();
         params.height = totalHeight + (expandableListView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
         expandableListView.setLayoutParams(params);
-    }
-
-    class ExpandableAdapter extends BaseExpandableListAdapter {
-
-        @Override
-        public int getGroupCount() {
-            return listOfHomeGoodGroup.size();
-        }
-
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            return 1;
-        }
-
-        @Override
-        public FakeDao.HomeGoodGroup getGroup(int groupPosition) {
-            return listOfHomeGoodGroup.get(groupPosition);
-        }
-
-        @Override
-        public FakeDao.HomeGoodChild getChild(int groupPosition, int childPosition) {
-            return listOfHomeGoodGroup.get(groupPosition).homeGoodChildList.get(childPosition);
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return false;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            GoodListTitle goodListTitle;
-            if (convertView == null) {
-                goodListTitle = new GoodListTitle(getContext());
-            } else {
-                goodListTitle = (GoodListTitle) convertView;
-            }
-            goodListTitle.setTv_elv_group_title(getGroup(groupPosition).name);
-            return goodListTitle;
-        }
-
-        @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
-                                 ViewGroup parent) {
-            WrapHeightGridView gridView;
-            /*ViewGroup.LayoutParams params = gridView.getLayoutParams();
-            params.height= LinearLayout.LayoutParams.WRAP_CONTENT;
-            params.width=LinearLayout.LayoutParams.MATCH_PARENT;
-            gridView.setLayoutParams(params);*/
-
-            if (convertView == null) {
-                gridView = new WrapHeightGridView(getContext());
-            } else {
-                gridView = (WrapHeightGridView) convertView;
-            }
-
-            gridView.setPadding(5, 5, 5, 5);
-            gridView.setNumColumns(3);
-            gridView.setAdapter(new ListGViewAdaptar(getGroup(groupPosition).homeGoodChildList));
-            return gridView;
-        }
-
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
-        }
-
-
-    }
-
-    private class ListGViewAdaptar extends BaseAdapter {
-        List<FakeDao.HomeGoodChild> homeGoodChildren;
-
-        public ListGViewAdaptar(List<FakeDao.HomeGoodChild> homeGoodChildList) {
-            homeGoodChildren = homeGoodChildList;
-        }
-
-        @Override
-        public int getCount() {
-            return homeGoodChildren.size();
-        }
-
-        @Override
-        public FakeDao.HomeGoodChild getItem(int position) {
-            return homeGoodChildren.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            GoodListItem goodListItem;
-            if (convertView != null) {
-                goodListItem = (GoodListItem) convertView;
-            } else {
-                goodListItem = new GoodListItem(getContext());
-            }
-            goodListItem.setTvGoodPrice(getItem(position).price);
-            goodListItem.setTvGoodName(getItem(position).name);
-            goodListItem.setIvGoodThumb(getItem(position).url);
-            return goodListItem;
-           /* TextView textView = null;
-            if (convertView == null) {
-                textView = new TextView(getContext());
-                textView.setText("测试");
-                textView.setTextSize(30);
-            } else {
-                textView = (TextView) convertView;
-            }
-            return textView;*/
-        }
     }
 
 
@@ -505,6 +296,9 @@ public class HomeFragment extends BaseFragment {
 
     private ImageView[] mBottomImages;//底部只是当前页面的小圆点
 
+    /**
+     * 初始化轮播图片底下显示位置的小圆点
+     */
     private void initDots() {
         //创建底部指示位置的导航栏
         mBottomImages = new ImageView[listOfImageView.size()];
@@ -527,6 +321,9 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 初始化轮播广告图片URL地址列表
+     */
     private void initImageUrls() {
         listOfImageUrl = new ArrayList<>();
         for (String url : imageUrls) {
@@ -534,6 +331,9 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 初始化轮播图片列表
+     */
     private void initImageViewList() {
         listOfImageView = new ArrayList<>();
         for (int i = 0; i < imageUrls.length; i++) {
@@ -546,10 +346,13 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 初始化轮播图片ViewPager控件
+     */
     private void initViewPager() {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new MyPagerAdapter());
-        viewPager.addOnPageChangeListener(new MyPageChangeListener());
+        viewPager.setAdapter(new ViewPagerAdapter(listOfImageView, listOfImageUrl));
+        viewPager.addOnPageChangeListener(new PageChangeListener());
         viewPager.setCurrentItem(Integer.MAX_VALUE / 2);//默认在中间，使用户看不到边界
         //开始轮播效果
         new Thread() {
@@ -573,44 +376,10 @@ public class HomeFragment extends BaseFragment {
         }.start();
     }
 
-
-    private class MyPagerAdapter extends PagerAdapter {
-
-        @Override
-        public int getCount() {
-            return Integer.MAX_VALUE;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            position %= listOfImageView.size();
-            if (position < 0) {
-                position = listOfImageView.size() + position;
-            }
-            ImageView imageView = listOfImageView.get(position);
-            imageLoader.displayImage(listOfImageUrl.get(position), imageView);
-
-            ViewParent vp = imageView.getParent();
-            if (vp != null) {
-                ViewGroup parent = (ViewGroup) vp;
-                parent.removeView(imageView);
-            }
-
-            (container).addView(listOfImageView.get(position));
-            return listOfImageView.get(position);
-        }
-    }
-
-    private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
+    /**
+     * 图片轮播状态该表的监听器
+     */
+    private class PageChangeListener implements ViewPager.OnPageChangeListener {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

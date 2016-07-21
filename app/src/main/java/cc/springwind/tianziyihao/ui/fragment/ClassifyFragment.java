@@ -23,6 +23,8 @@ import cc.springwind.tianziyihao.global.BaseFragment;
 
 /**
  * Created by HeFan on 2016/7/7.
+ *
+ * 分类页面fragment
  */
 public class ClassifyFragment extends BaseFragment {
     @InjectView(R.id.lv_classify_first_level)

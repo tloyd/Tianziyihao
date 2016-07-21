@@ -26,6 +26,8 @@ import cn.smssdk.gui.RegisterPage;
 
 /**
  * Created by HeFan on 2016/7/20.
+ *
+ * 登录界面
  */
 public class LoginFragment extends BaseFragment {
     @InjectView(R.id.et_username)
@@ -46,7 +48,7 @@ public class LoginFragment extends BaseFragment {
         ((MainActivity) getActivity()).setControllBarVisible(false);
         View inflate = View.inflate(getContext(), R.layout.fragment_login, null);
         ButterKnife.inject(this, inflate);
-        activity.return_flag=true;
+        activity.return_flag = true;
         return inflate;
     }
 
@@ -103,10 +105,7 @@ public class LoginFragment extends BaseFragment {
         super.onDestroyView();
         ButterKnife.reset(this);
         LogUtil.debug("-->>onDestroyView", "onResume:");
-
-
     }
-
 
 
     @OnClick({R.id.btn_log_in, R.id.tv_register, R.id.tv_forget_pwd})
@@ -116,10 +115,10 @@ public class LoginFragment extends BaseFragment {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
 
-//                SpUtil.putBoolean(getContext(), Constants.IS_LOGIN,);
+                //SpUtil.putBoolean(getContext(), Constants.IS_LOGIN,);
                 break;
             case R.id.tv_register:
-//                register();
+                //register();
                 FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
                 supportFragmentManager.beginTransaction().replace(R.id.fl_content, new RegisterFragment(),
                         "RegisterFragment").addToBackStack("RegisterFragment").commit();
@@ -129,20 +128,19 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
-    /*performClick()*/
     private void register() {
         //打开注册页面
         RegisterPage registerPage = new RegisterPage();
         registerPage.setRegisterCallback(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
-// 解析注册结果
+                // 解析注册结果
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     @SuppressWarnings("unchecked")
                     HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
                     String country = (String) phoneMap.get("country");
                     String phone = (String) phoneMap.get("phone");
 
-// 提交用户信息
+                    // 提交用户信息
                     registerUser(country, phone);
                 }
             }

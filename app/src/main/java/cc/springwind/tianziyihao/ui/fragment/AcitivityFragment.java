@@ -11,6 +11,8 @@ import cc.springwind.tianziyihao.global.BaseFragment;
 
 /**
  * Created by HeFan on 2016/7/7.
+ *
+ * 活动界面
  */
 public class AcitivityFragment extends BaseFragment {
     @Nullable

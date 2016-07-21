@@ -15,24 +15,19 @@ import cc.springwind.tianziyihao.utils.LogUtil;
 
 /**
  * Created by HeFan on 2016/7/7.
+ *
+ * 用户界面
  */
 public class UserFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
-        activity.return_flag=false;
+        activity.return_flag = false;
 
         LogUtil.debug(activity.TAG, "UserFragment");
-        View view;
-//        if (SpUtil.getBoolean(getContext(), Constants.IS_LOGIN, false))
-        {
-            view = View.inflate(activity, R.layout.fragment_user, null);
-            ButterKnife.inject(this, view);
-        } /*else {
-            view = View.inflate(activity, R.layout.fragment_login, null);
-            ButterKnife.inject(this, view);
-        }*/
+        View view = View.inflate(activity, R.layout.fragment_user, null);
+        ButterKnife.inject(this, view);
         return view;
     }
 
@@ -41,12 +36,6 @@ public class UserFragment extends BaseFragment {
         super.onDestroyView();
         ButterKnife.reset(this);
     }
-
-//    @OnClick(R.id.tbi_clear)
-//    public void onClick() {
-//        deleteFilesByDirectory(getContext().getCacheDir());
-//        ToastUtil.showToast(getContext(), "清除完毕");
-//    }
 
     /**
      * 清除指定文件夹下的文件

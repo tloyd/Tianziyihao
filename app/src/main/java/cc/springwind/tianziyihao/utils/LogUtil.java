@@ -4,6 +4,8 @@ import android.util.Log;
 
 /**
  * Created by HeFan on 2016/7/7.
+ *
+ * 日志打印工具类,标志位DEBUG为true表示打印,false表示不打印
  */
 public class LogUtil {
     private static final boolean DEBUG = true;

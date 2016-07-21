@@ -24,6 +24,8 @@ import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
 /**
  * Created by HeFan on 2016/7/16.
+ *
+ * 二级分类fragment， 作用于点击分类一级条目后显示在右边的fragment
  */
 public class ClassifyContentFragment extends BaseFragment {
 

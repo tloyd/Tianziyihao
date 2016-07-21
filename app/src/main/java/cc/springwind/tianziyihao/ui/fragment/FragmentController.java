@@ -11,6 +11,8 @@ import cc.springwind.tianziyihao.global.BaseFragment;
 
 /**
  * Created by HeFan on 2016/6/7.
+ *
+ * fragment控制器
  */
 public class FragmentController {
     private static int containerId;
