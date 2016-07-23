@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
 

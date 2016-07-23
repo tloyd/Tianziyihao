@@ -1,4 +1,4 @@
-package cc.springwind.tianziyihao.dao;
+package cc.springwind.tianziyihao.db.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.springwind.tianziyihao.bean.CartInfo;
+import cc.springwind.tianziyihao.db.bean.CartBean;
 import cc.springwind.tianziyihao.db.DBHelp;
 
 /**
@@ -35,7 +35,7 @@ public class CartDao {
     public String good_price;
     public int count;*/
 
-    public void insert(CartInfo info) {
+    public void insert(CartBean info) {
         //1,开启数据库,准备做写入操作
         SQLiteDatabase db = mDBHelp.getWritableDatabase();
 
@@ -69,19 +69,19 @@ public class CartDao {
         db.close();
     }
 
-    public List<CartInfo> findAll() {
+    public List<CartBean> findAll() {
         SQLiteDatabase db = mDBHelp.getWritableDatabase();
 
         Cursor cursor = db.query("cart", null, null, null, null, null, "_id desc");
-        List<CartInfo> mList = new ArrayList<>();
+        List<CartBean> mList = new ArrayList<>();
         while (cursor.moveToNext()) {
-            CartInfo cartInfo = new CartInfo();
-            cartInfo.count=cursor.getInt(cursor.getColumnIndex("count"));
-            cartInfo.good_id=cursor.getString(cursor.getColumnIndex("good_id"));
-            cartInfo.good_name=cursor.getString(cursor.getColumnIndex("good_name"));
-            cartInfo.good_price=cursor.getString(cursor.getColumnIndex("good_price"));
-            cartInfo.good_img_url=cursor.getString(cursor.getColumnIndex("good_img_url"));
-            mList.add(cartInfo);
+            CartBean cartBean = new CartBean();
+            cartBean.count=cursor.getInt(cursor.getColumnIndex("count"));
+            cartBean.good_id=cursor.getString(cursor.getColumnIndex("good_id"));
+            cartBean.good_name=cursor.getString(cursor.getColumnIndex("good_name"));
+            cartBean.good_price=cursor.getString(cursor.getColumnIndex("good_price"));
+            cartBean.good_img_url=cursor.getString(cursor.getColumnIndex("good_img_url"));
+            mList.add(cartBean);
         }
         cursor.close();
         db.close();

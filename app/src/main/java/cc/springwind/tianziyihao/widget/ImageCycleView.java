@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.ADInfo;
+import cc.springwind.tianziyihao.entity.ADInfo;
 
 /**
  * 广告图片自动轮播控件</br>

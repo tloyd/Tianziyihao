@@ -23,17 +23,21 @@ import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.adapter.ExpandableAdapter;
 import cc.springwind.tianziyihao.adapter.GridViewAdapter;
 import cc.springwind.tianziyihao.adapter.ViewPagerAdapter;
-import cc.springwind.tianziyihao.bean.Constants;
-import cc.springwind.tianziyihao.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.UserDataDao;
+import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
+import cc.springwind.tianziyihao.global.Constants;
+import cc.springwind.tianziyihao.utils.DateUtil;
 import cc.springwind.tianziyihao.utils.LogUtil;
 import cc.springwind.tianziyihao.utils.SpUtil;
+import cc.springwind.tianziyihao.utils.ToastUtil;
 import cc.springwind.tianziyihao.widget.WrapHeightExpandableListView;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
 /**
  * Created by HeFan on 2016/7/7.
- *
+ * <p/>
  * 首页
  */
 public class HomeFragment extends BaseFragment {
@@ -185,7 +189,7 @@ public class HomeFragment extends BaseFragment {
         ButterKnife.reset(this);
     }
 
-    @OnClick({R.id.index_top_logo, R.id.index_search_button})
+    @OnClick({R.id.index_top_logo, R.id.index_search_button, R.id.btn_get_scole, R.id.btn_get_share})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.index_top_logo:
@@ -197,8 +201,33 @@ public class HomeFragment extends BaseFragment {
                     controller.showFragment(4);
                 }
                 break;
-            case R.id.index_search_button:
+            case R.id.index_search_button://搜索按钮
                 break;
+
+            case R.id.btn_get_scole://签到赚积分
+                getScole();
+                break;
+
+            case R.id.btn_get_share://分享有礼
+
+                break;
+        }
+    }
+
+    private void getScole() {
+        String date = SpUtil.getString(getContext(), Constants.SIGN_DATE, "");
+        String today = DateUtil.getSimpleDate();
+        if (date.equals(today)) {
+            ToastUtil.showToast(getContext(), "您今天已经打过卡啦!");
+        } else {
+            SpUtil.putString(getContext(), Constants.SIGN_DATE, today);
+            ToastUtil.showToast(getContext(), "今日签到:积分+6");
+            String phone = SpUtil.getString(getContext(), Constants.CURRENT_USER, "");
+            UserDataDao dao = UserDataDao.getInstance(getContext());
+            int id = UserInfoDao.getInstance(getContext()).queryId(phone);
+            int scole = dao.queryScoleById(id);
+            scole += 6;
+            dao.updateScoleById(id, scole);
         }
     }
 

@@ -25,10 +25,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.CartInfo;
-import cc.springwind.tianziyihao.bean.GoodDetailInfo;
-import cc.springwind.tianziyihao.dao.CartDao;
-import cc.springwind.tianziyihao.dao.FakeDao;
+import cc.springwind.tianziyihao.db.bean.CartBean;
+import cc.springwind.tianziyihao.entity.GoodDetailInfo;
+import cc.springwind.tianziyihao.db.dao.CartDao;
+import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.dialog.ShareDialogFragment;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.ui.fragment.FragmentController;
@@ -235,16 +235,16 @@ public class GoodDetailActivity extends BaseActivity {
 
     private void add2Cart() {
         CartDao instance = CartDao.getInstance(getApplicationContext());
-        List<CartInfo> all = instance.findAll();
-        for (CartInfo cartInfo :
+        List<CartBean> all = instance.findAll();
+        for (CartBean cartBean :
                 all) {
-            if (id.equals(cartInfo.good_id)){
-                instance.update(id,++cartInfo.count);
-                ToastUtil.showToast(getApplicationContext(),"添加到購物車:"+cartInfo.count+++"件");
+            if (id.equals(cartBean.good_id)){
+                instance.update(id,++cartBean.count);
+                ToastUtil.showToast(getApplicationContext(),"添加到購物車:"+ cartBean.count+++"件");
                 return;
             }
         }
-        CartInfo info = new CartInfo();
+        CartBean info = new CartBean();
         info.count=1;
         info.good_id=id;
         info.good_name=goodDetailInfo.good_name;

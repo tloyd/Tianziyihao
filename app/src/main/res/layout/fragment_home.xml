@@ -132,6 +132,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/btn_get_scole"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -143,6 +144,7 @@
                     android:textSize="@dimen/micro_text_size"/>
 
                 <Button
+                    android:id="@+id/btn_get_share"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -154,6 +156,7 @@
                     android:textSize="@dimen/micro_text_size"/>
 
                 <Button
+                    android:id="@+id/btn_my_order"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -165,6 +168,7 @@
                     android:textSize="@dimen/micro_text_size"/>
 
                 <Button
+                    android:id="@+id/btn_favourate"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -176,6 +180,7 @@
                     android:textSize="@dimen/micro_text_size"/>
 
                 <Button
+                    android:id="@+id/btn_charge"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

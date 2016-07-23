@@ -1,4 +1,4 @@
-package cc.springwind.tianziyihao.bean;
+package cc.springwind.tianziyihao.entity;
 /**
  * 描述：广告信息</br>
  * @author Eden Cheng</br>

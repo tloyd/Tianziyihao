@@ -20,8 +20,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.Constants;
-import cc.springwind.tianziyihao.dao.UserDao;
+import cc.springwind.tianziyihao.db.bean.UserDataBean;
+import cc.springwind.tianziyihao.db.dao.UserDataDao;
+import cc.springwind.tianziyihao.global.Constants;
+import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
@@ -95,8 +97,6 @@ public class RegisterFragment extends BaseFragment {
 
                 } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                     //返回支持发送验证码的国家列表
-                } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-
                 }
             } else {
                 ((Throwable) data).printStackTrace();
@@ -106,19 +106,24 @@ public class RegisterFragment extends BaseFragment {
 
     private void register(String phone) {
         String passwordMD5 = MD5.hexdigest(etPassword.getText().toString().trim());
-        UserDao userDao = UserDao.getInstance(getContext());
-        long l = userDao.insert(phone, passwordMD5);
+        UserInfoDao userInfoDao = UserInfoDao.getInstance(getContext());
+        UserDataDao userDataDao = UserDataDao.getInstance(getContext());
+        long l = userInfoDao.insert(phone, passwordMD5);
         if (l != -1) {
             ToastUtil.showToast(getContext(), "注册成功");
             SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, true);
             SpUtil.putString(getContext(), Constants.CURRENT_USER, phone);
+            UserDataBean userDataBean = new UserDataBean();
+            userDataBean.user_id = userInfoDao.queryId(phone);
+            userDataDao.insert(userDataBean);
             MainActivity mainActivity = (MainActivity) getActivity();
             FragmentManager manager = mainActivity.getSupportFragmentManager();
             // POP_BACK_STACK_INCLUSIVE 该标志位表示在后退栈里的,所有在这个找到的Fragment后面入栈的Fragment,包括这个Fragment,都会被弹出
             // TODO: 2016/7/21 注册成功直接返回最后一次被点击的页面
             manager.popBackStack("LoginFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            mainActivity.setRgTabClick(0);
             mainActivity.setRgTabClick(mainActivity.array[1]);
-            LogUtil.debug(activity.TAG,"test");
+            LogUtil.debug(activity.TAG, "test");
         }
     }
 
@@ -149,9 +154,9 @@ public class RegisterFragment extends BaseFragment {
 
     @OnClick({R.id.btn_get_sms_number, R.id.btn_register, R.id.tv_get_support_contries})
     public void onClick(View view) {
+        phoneNumber = etUsername.getText().toString().trim();
         switch (view.getId()) {
             case R.id.btn_get_sms_number:
-                phoneNumber = etUsername.getText().toString().trim();
                 if (TextCheckUtil.isPhoneNumber(phoneNumber)) {
                     SMSSDK.getVerificationCode("86", phoneNumber);
                 } else {
@@ -169,7 +174,8 @@ public class RegisterFragment extends BaseFragment {
                     ToastUtil.showToast(getContext(), "验证码格式错误");
                     break;
                 }
-                SMSSDK.submitVerificationCode("86", phoneNumber, etSmsNumber.getText().toString().trim());
+//                SMSSDK.submitVerificationCode("86", phoneNumber, etSmsNumber.getText().toString().trim());
+                register(phoneNumber);
                 break;
             case R.id.tv_get_support_contries:
                 SMSSDK.getSupportedCountries();

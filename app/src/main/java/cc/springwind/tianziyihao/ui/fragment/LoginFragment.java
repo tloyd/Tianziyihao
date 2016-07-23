@@ -11,15 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.sina.weibo.sdk.utils.MD5;
+
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
+import cc.springwind.tianziyihao.global.Constants;
+import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
+import cc.springwind.tianziyihao.utils.SpUtil;
+import cc.springwind.tianziyihao.utils.ToastUtil;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.RegisterPage;
@@ -114,6 +120,17 @@ public class LoginFragment extends BaseFragment {
             case R.id.btn_log_in:
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
+
+                UserInfoDao userInfoDao = UserInfoDao.getInstance(activity);
+                boolean check = userInfoDao.check(username, MD5.hexdigest(password));
+                if (check) {
+                    SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, true);
+                    SpUtil.getString(getContext(), Constants.CURRENT_USER, username);
+                    getFragmentManager().popBackStack();
+                    ((MainActivity) getActivity()).setRgTabClick(activity.array[1]);
+                } else {
+                    ToastUtil.showToast(getContext(), "密码或帐号不正确,请重新输入");
+                }
 
                 //SpUtil.putBoolean(getContext(), Constants.IS_LOGIN,);
                 break;

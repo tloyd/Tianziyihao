@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.CartInfo;
+import cc.springwind.tianziyihao.db.bean.CartBean;
 import cc.springwind.tianziyihao.ui.fragment.CartFragment;
 
 /**
@@ -26,24 +26,24 @@ import cc.springwind.tianziyihao.ui.fragment.CartFragment;
 public class CartListAdapter extends BaseAdapter {
     private CartFragment cartFragment;
     private DecimalFormat decimalFormat;
-    private CartInfo item;
+    private CartBean item;
     private boolean isSelected = false;
-    private List<CartInfo> cartInfoList;
+    private List<CartBean> cartBeanList;
 
-    public CartListAdapter(CartFragment cartFragment, List<CartInfo> cartInfoList) {
+    public CartListAdapter(CartFragment cartFragment, List<CartBean> cartBeanList) {
         this.cartFragment = cartFragment;
-        this.cartInfoList = cartInfoList;
+        this.cartBeanList = cartBeanList;
         decimalFormat = new DecimalFormat("0.0");
     }
 
     @Override
     public int getCount() {
-        return cartInfoList.size();
+        return cartBeanList.size();
     }
 
     @Override
-    public CartInfo getItem(int position) {
-        return cartInfoList.get(position);
+    public CartBean getItem(int position) {
+        return cartBeanList.get(position);
     }
 
     @Override

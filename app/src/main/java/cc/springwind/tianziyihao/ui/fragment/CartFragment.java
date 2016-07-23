@@ -21,8 +21,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.adapter.CartListAdapter;
-import cc.springwind.tianziyihao.bean.CartInfo;
-import cc.springwind.tianziyihao.dao.CartDao;
+import cc.springwind.tianziyihao.db.bean.CartBean;
+import cc.springwind.tianziyihao.db.dao.CartDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.utils.LogUtil;
 
@@ -43,7 +43,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     TextView tvPay;
     private View view;
     private CartDao cartDao;
-    private List<CartInfo> cartInfoList;
+    private List<CartBean> cartBeanList;
     private CartListAdapter cartListAdapter;
     private DecimalFormat decimalFormat;
     private float sum = 0.0f;
@@ -86,8 +86,8 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
 
     private void initData() {
         cartDao = CartDao.getInstance(getContext());
-        cartInfoList = cartDao.findAll();
-        cartListAdapter = new CartListAdapter(this, cartInfoList);
+        cartBeanList = cartDao.findAll();
+        cartListAdapter = new CartListAdapter(this, cartBeanList);
         cartListAdapter.setAddListener(this);
         cartListAdapter.setReduceListener(this);
         cartListAdapter.setDeleteListener(this);
@@ -100,7 +100,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                             int position = (Integer) tag;
                             if (isChecked) {
                                 // TODO: 2016/7/19 0019 计算有误
-                                sum += (float) cartInfoList.get(position).count * Float.parseFloat(cartInfoList.get
+                                sum += (float) cartBeanList.get(position).count * Float.parseFloat(cartBeanList.get
                                         (position)
                                         .good_price);
                                 tvSum.setText(decimalFormat.format(sum) + "");
@@ -109,7 +109,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                                 float v = sum.floatValue();
                                 tvSum.setText(v+"");*/
                             } else {
-                                sum -= (float) cartInfoList.get(position).count * Float.parseFloat(cartInfoList.get
+                                sum -= (float) cartBeanList.get(position).count * Float.parseFloat(cartBeanList.get
                                         (position)
                                         .good_price);
                                 tvSum.setText(decimalFormat.format(sum) + "");
@@ -131,12 +131,12 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     public void onHiddenChanged(boolean hidden) {
         LogUtil.log(activity.TAG, this, "onHiddenChanged");
         if (hidden) {
-            updateCartDB(cartInfoList);
+            updateCartDB(cartBeanList);
         }
     }
 
-    private void updateCartDB(List<CartInfo> list) {
-        for (CartInfo info : list)
+    private void updateCartDB(List<CartBean> list) {
+        for (CartBean info : list)
             cartDao.update(info.good_id, info.count);
     }
 
@@ -159,31 +159,26 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                 if (tag != null && tag instanceof Integer) { //解决问题：如何知道你点击的按钮是哪一个列表项中的，通过Tag的position
                     int position = (Integer) tag;
                     //更改集合的数据
-                    int num = cartInfoList.get(position).count;
+                    int num = cartBeanList.get(position).count;
                     num++;
-                    cartInfoList.get(position).count = num; //修改集合中商品数量
-                    //解决问题：点击某个按钮的时候，如果列表项所需的数据改变了，如何更新UI
+                    cartBeanList.get(position).count = num; //修改集合中商品数量
                     cartListAdapter.notifyDataSetChanged();
                 }
                 break;
             case R.id.pro_reduce:
-                if (tag != null && tag instanceof Integer) { //解决问题：如何知道你点击的按钮是哪一个列表项中的，通过Tag的position
+                if (tag != null && tag instanceof Integer) {
                     int position = (Integer) tag;
-                    //更改集合的数据
-                    int num = cartInfoList.get(position).count;
+                    int num = cartBeanList.get(position).count;
                     num--;
-                    cartInfoList.get(position).count = num; //修改集合中商品数量
-                    //解决问题：点击某个按钮的时候，如果列表项所需的数据改变了，如何更新UI
+                    cartBeanList.get(position).count = num; //修改集合中商品数量
                     cartListAdapter.notifyDataSetChanged();
                 }
                 break;
 
             case R.id.tv_delete:
-                if (tag != null && tag instanceof Integer) { //解决问题：如何知道你点击的按钮是哪一个列表项中的，通过Tag的position
+                if (tag != null && tag instanceof Integer) {
                     int position = (Integer) tag;
-                    //更改集合的数据
-                    cartInfoList.remove(position);
-                    //解决问题：点击某个按钮的时候，如果列表项所需的数据改变了，如何更新UI
+                    cartBeanList.remove(position);
                     cartListAdapter.notifyDataSetChanged();
                 }
                 break;
@@ -203,7 +198,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
 
         @Override
         public void onChange(boolean selfChange) {
-            cartInfoList = cartDao.findAll();
+            cartBeanList = cartDao.findAll();
             // TODO: 2016/7/21 日志没有打印,但是数据确实更新了
             LogUtil.log(activity.TAG,this,"onChange");
         }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cc.springwind.tianziyihao.bean;
+package cc.springwind.tianziyihao.global;
 
 /**
  * 该类定义了微博授权时所需要的参数。
@@ -60,4 +60,5 @@ public interface Constants {
     int RETURN_TO_CART = 100;
     String IS_LOGIN = "is_login";
     String CURRENT_USER = "current_user";
+    String SIGN_DATE = "sign_date";
 }

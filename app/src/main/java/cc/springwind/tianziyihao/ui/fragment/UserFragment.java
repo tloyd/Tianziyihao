@@ -11,14 +11,15 @@ import java.io.File;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.Constants;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.utils.SpUtil;
 
 /**
  * Created by HeFan on 2016/7/7.
- * <p/>
+ * <p>
  * 用户界面
  */
 public class UserFragment extends BaseFragment {
@@ -59,6 +60,20 @@ public class UserFragment extends BaseFragment {
             for (File item : file.listFiles()) {
                 item.delete();
             }
+        }
+    }
+
+    @OnClick({R.id.tbi_clear, R.id.btn_log_out})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tbi_clear:
+                deleteFilesByDirectory(getContext().getCacheDir());
+                break;
+            case R.id.btn_log_out:
+                SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, false);
+                activity.getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new LoginFragment(),
+                        "LoginFragment").addToBackStack("LoginFragment").commit();
+                break;
         }
     }
 }

@@ -14,7 +14,7 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.widget.LoginButton;
 
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.Constants;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.token.AccessTokenKeeper;
 

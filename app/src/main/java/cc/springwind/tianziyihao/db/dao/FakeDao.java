@@ -1,4 +1,4 @@
-package cc.springwind.tianziyihao.dao;
+package cc.springwind.tianziyihao.db.dao;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.springwind.tianziyihao.bean.GoodDetailInfo;
+import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 
 /**
  * Created by HeFan on 2016/7/12.

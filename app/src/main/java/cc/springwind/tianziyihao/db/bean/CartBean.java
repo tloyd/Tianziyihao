@@ -1,9 +1,9 @@
-package cc.springwind.tianziyihao.bean;
+package cc.springwind.tianziyihao.db.bean;
 
 /**
  * Created by HeFan on 2016/7/18.
  */
-public class CartInfo {
+public class CartBean {
     /*create table cart " +
     "(_id integer primary key autoincrement , " +
     "good_id varchar(20)," +

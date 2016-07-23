@@ -8,7 +8,7 @@ import android.widget.RadioGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.Constants;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.ui.fragment.FragmentController;
 import cc.springwind.tianziyihao.ui.fragment.LoginFragment;

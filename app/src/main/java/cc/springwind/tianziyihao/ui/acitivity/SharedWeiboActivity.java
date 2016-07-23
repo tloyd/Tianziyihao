@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.bean.Constants;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.token.AccessTokenKeeper;
 

@@ -6,7 +6,7 @@ import android.widget.BaseExpandableListAdapter;
 
 import java.util.List;
 
-import cc.springwind.tianziyihao.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.ui.fragment.HomeFragment;
 import cc.springwind.tianziyihao.widget.GoodListTitle;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;

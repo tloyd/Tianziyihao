@@ -1,4 +1,4 @@
-package cc.springwind.tianziyihao.dao;
+package cc.springwind.tianziyihao.db.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,19 +10,19 @@ import cc.springwind.tianziyihao.db.DBHelp;
 /**
  * Created by HeFan on 2016/7/3.
  */
-public class UserDao {
+public class UserInfoDao {
     private DBHelp mDBHelp;
-    private static UserDao mUserDao = null;
+    private static UserInfoDao mUserInfoDao = null;
 
-    private UserDao(Context context) {
+    private UserInfoDao(Context context) {
         mDBHelp = new DBHelp(context);
     }
 
-    public static UserDao getInstance(Context context) {
-        if (mUserDao == null) {
-            mUserDao = new UserDao(context);
+    public static UserInfoDao getInstance(Context context) {
+        if (mUserInfoDao == null) {
+            mUserInfoDao = new UserInfoDao(context);
         }
-        return mUserDao;
+        return mUserInfoDao;
     }
 
     /*"username varchar(20)" +
@@ -76,4 +76,17 @@ public class UserDao {
         return false;
     }
 
+    public int queryId(String phone) {
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+
+        Cursor cursor = db.query("userinfo", new String[]{"_id"}, "username=?", new String[]{phone}, null, null, "_id" +
+                " desc");
+        int _id = 0;
+        while (cursor.moveToNext()) {
+            _id = cursor.getInt(cursor.getColumnIndex("_id"));
+        }
+        cursor.close();
+        db.close();
+        return _id;
+    }
 }

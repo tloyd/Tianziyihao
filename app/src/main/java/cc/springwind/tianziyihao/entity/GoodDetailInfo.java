@@ -1,4 +1,4 @@
-package cc.springwind.tianziyihao.bean;
+package cc.springwind.tianziyihao.entity;
 
 import java.util.List;
 
