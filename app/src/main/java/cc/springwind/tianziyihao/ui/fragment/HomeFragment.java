@@ -23,11 +23,12 @@ import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.adapter.ExpandableAdapter;
 import cc.springwind.tianziyihao.adapter.GridViewAdapter;
 import cc.springwind.tianziyihao.adapter.ViewPagerAdapter;
-import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.db.dao.UserDataDao;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.global.Constants;
+import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.DateUtil;
 import cc.springwind.tianziyihao.utils.LogUtil;
 import cc.springwind.tianziyihao.utils.SpUtil;
@@ -55,11 +56,12 @@ public class HomeFragment extends BaseFragment {
     };
     private LinearLayout llHottestIndicator;
     private WrapHeightExpandableListView eListView;
-    private List<FakeDao.HomeGoodGroup> listOfHomeGoodGroup;
-    private FakeDao fakeDao;
-    private List<FakeDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood;
+    private List<GoodsDao.HomeGoodGroup> listOfHomeGoodGroup;
+    /*private FakeDao fakeDao;
+    private List<FakeDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood;*/
     // 设置控制播放标志位
     private boolean isplay = true;
+    private GoodsDao goodsDao;
 
     @Nullable
     @Override
@@ -131,22 +133,19 @@ public class HomeFragment extends BaseFragment {
      * 初始化显示购买的三个item
      */
     private void initLimitGridView() {
-        fakeDao = new FakeDao();
-        listOfHomeLimitPurchaseGood = fakeDao.getHomeLimitPurchaseList();
-//        WrapHeightGridView gv_limit_home = (WrapHeightGridView) view.findViewById(R.id.gv_limit_home);
+        /*fakeDao = new FakeDao();
+        listOfHomeLimitPurchaseGood = fakeDao.getHomeLimitPurchaseList();*/
+
+        goodsDao = GoodsDao.getInstance(getContext());
+        List<GoodsDao.HomeLimitPurchaseGood> homeLimitPurchaseList = goodsDao.getHomeLimitPurchaseList();
         WrapHeightGridView gv_limit_home = new WrapHeightGridView(getContext());
-//        GridView gv_limit_home = (GridView) view.findViewById(R.id.gv_limit_home);
-
         LinearLayout ll_gv_limit = (LinearLayout) view.findViewById(R.id.ll_gv_limit);
-
-        GridViewAdapter adapter = new GridViewAdapter(this, listOfHomeLimitPurchaseGood);
+        GridViewAdapter adapter = new GridViewAdapter(this, homeLimitPurchaseList);
         gv_limit_home.setPadding(5, 5, 5, 5);
         gv_limit_home.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
         gv_limit_home.setNumColumns(3);
         gv_limit_home.setAdapter(adapter);
-
         setGridViewHeightBasedOnChildren(gv_limit_home);
-
         ll_gv_limit.addView(gv_limit_home);
     }
 
@@ -205,7 +204,7 @@ public class HomeFragment extends BaseFragment {
                 break;
 
             case R.id.btn_get_scole://签到赚积分
-                getScole();
+                getScore();
                 break;
 
             case R.id.btn_get_share://分享有礼
@@ -214,7 +213,10 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
-    private void getScole() {
+    /**
+     * 签到操作
+     */
+    private void getScore() {
         String date = SpUtil.getString(getContext(), Constants.SIGN_DATE, "");
         String today = DateUtil.getSimpleDate();
         if (date.equals(today)) {
@@ -237,7 +239,10 @@ public class HomeFragment extends BaseFragment {
     private void initExpandableListView() {
         eListView = (WrapHeightExpandableListView) view.findViewById(R.id.elv_home);
 
-        listOfHomeGoodGroup = fakeDao.getHomeGoodLists();
+        /*listOfHomeGoodGroup = fakeDao.getHomeGoodLists();*/
+
+        listOfHomeGoodGroup = goodsDao.getHomeGoodLists();
+
         ExpandableAdapter adapter = new ExpandableAdapter(this, listOfHomeGoodGroup);
         eListView.setAdapter(adapter);
         eListView.setGroupIndicator(null);
@@ -247,6 +252,8 @@ public class HomeFragment extends BaseFragment {
         eListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                ((MainActivity) getActivity()).setRgTabClick(2);
+                SpUtil.putInt(getContext(), Constants.ITEM_CLICKED, groupPosition);
                 return true;
             }
         });

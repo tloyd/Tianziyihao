@@ -7,8 +7,8 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.global.Constants;
-import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
 import cc.springwind.tianziyihao.ui.fragment.HomeFragment;
 import cc.springwind.tianziyihao.widget.GoodListItem;
@@ -18,11 +18,16 @@ import cc.springwind.tianziyihao.widget.GoodListItem;
  */
 public class GridViewAdapter extends BaseAdapter {
     private HomeFragment homeFragment;
-    List<FakeDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood;
+    List<GoodsDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood;
 
-    public GridViewAdapter(HomeFragment homeFragment, List<FakeDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood) {
+    public GridViewAdapter(HomeFragment homeFragment, List<GoodsDao.HomeLimitPurchaseGood>
+            listOfHomeLimitPurchaseGood) {
         this.homeFragment = homeFragment;
-        this.listOfHomeLimitPurchaseGood = listOfHomeLimitPurchaseGood;
+        if (listOfHomeLimitPurchaseGood.size() <= 3) {
+            this.listOfHomeLimitPurchaseGood = listOfHomeLimitPurchaseGood;
+        } else {
+            this.listOfHomeLimitPurchaseGood = listOfHomeLimitPurchaseGood.subList(0, 3);
+        }
     }
 
     @Override
@@ -31,7 +36,7 @@ public class GridViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public FakeDao.HomeLimitPurchaseGood getItem(int position) {
+    public GoodsDao.HomeLimitPurchaseGood getItem(int position) {
         return listOfHomeLimitPurchaseGood.get(position);
     }
 
@@ -57,6 +62,7 @@ public class GridViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(homeFragment.getContext(), GoodDetailActivity.class);
+                // TODO: 2016/7/26 点击跳转在这儿
                 intent.putExtra("id", getItem(position).id);
                 homeFragment.getActivity().startActivityForResult(intent, Constants.RETURN_TO_CART);
             }

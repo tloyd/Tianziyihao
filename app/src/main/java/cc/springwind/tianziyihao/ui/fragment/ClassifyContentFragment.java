@@ -18,28 +18,28 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
 /**
  * Created by HeFan on 2016/7/16.
- *
+ * <p/>
  * 二级分类fragment， 作用于点击分类一级条目后显示在右边的fragment
  */
 public class ClassifyContentFragment extends BaseFragment {
 
     @InjectView(R.id.gv_classify_content)
     WrapHeightGridView gvClassifyContent;
-    private FakeDao.ClassifyGroup classifyGroup;
-    private List<FakeDao.SecondLevelGroup> groupList;
+    private GoodsDao.ClassifyGroup classifyGroup;
+    private List<GoodsDao.SecondLevelGroup> groupList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity.return_flag=false;
+        activity.return_flag = false;
 
-        classifyGroup = (FakeDao.ClassifyGroup) getArguments().getSerializable("tag");
+        classifyGroup = (GoodsDao.ClassifyGroup) getArguments().getSerializable("tag");
         groupList = classifyGroup.groupList;
     }
 
@@ -58,7 +58,6 @@ public class ClassifyContentFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        getActivity().findViewById(R.id.rg_tab).setVisibility(View.VISIBLE);
     }
 
     private void initUI() {
@@ -68,10 +67,10 @@ public class ClassifyContentFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle = new Bundle();
-                bundle.putString("id",groupList.get(position).id);
+                bundle.putString("second_class_id", groupList.get(position).second_class_id);
+                bundle.putString("first_class_id", String.valueOf(groupList.get(position).first_class_id));
                 ClassifyListFragment fragment = new ClassifyListFragment();
                 fragment.setArguments(bundle);
-//                getActivity().findViewById(R.id.rg_tab).setVisibility(View.INVISIBLE);
                 ft.replace(R.id.fl_content, fragment).addToBackStack("ClassifyListFragment").commit();
             }
         });
@@ -95,7 +94,7 @@ public class ClassifyContentFragment extends BaseFragment {
         }
 
         @Override
-        public FakeDao.SecondLevelGroup getItem(int position) {
+        public GoodsDao.SecondLevelGroup getItem(int position) {
             return groupList.get(position);
         }
 

@@ -1,6 +1,6 @@
 package cc.springwind.tianziyihao.ui.acitivity;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +17,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +28,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.db.bean.CartBean;
-import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 import cc.springwind.tianziyihao.db.dao.CartDao;
 import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.dialog.ShareDialogFragment;
+import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.ui.fragment.FragmentController;
+import cc.springwind.tianziyihao.utils.ScreenUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 
 /**
@@ -89,15 +93,6 @@ public class GoodDetailActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case 1001:
-
-                break;
-        }
-    }
-
     private void updataUI() {
         if (goodDetailInfo == null) {
             return;
@@ -106,8 +101,40 @@ public class GoodDetailActivity extends BaseActivity {
             ImageLoader instance = ImageLoader.getInstance();
             ArrayList<ImageView> imageViews = new ArrayList<>(goodDetailInfo.reveal_img_urls.size());
             for (int i = 0; i < goodDetailInfo.reveal_img_urls.size(); i++) {
-                ImageView imageView = new ImageView(getApplicationContext());
-                instance.displayImage(goodDetailInfo.reveal_img_urls.get(i), imageView);
+                final ImageView imageView = new ImageView(getApplicationContext());
+//                instance.displayImage(goodDetailInfo.reveal_img_urls.get(i), imageView);
+                instance.loadImage(goodDetailInfo.reveal_img_urls.get(i), new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        float scale = (float) loadedImage.getHeight() / loadedImage.getWidth();
+
+                        int screenWidthPixels = ScreenUtil.getScreenWidth(getApplicationContext());
+                        int screenHeightPixels = ScreenUtil.getScreenHeight(getApplicationContext());
+                        int height = (int) (screenWidthPixels * scale);
+
+                        if (height < screenHeightPixels) {
+                            height = screenHeightPixels;
+                        }
+
+                        ViewGroup.LayoutParams params = new ViewPager.LayoutParams();
+                        params.height = height;
+                        params.width = screenWidthPixels;
+                        imageView.setLayoutParams(params);
+                        imageView.setImageBitmap(loadedImage);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                    }
+                });
                 imageViews.add(imageView);
             }
             vpDetailScroll.setAdapter(new RevealImageAdapter(imageViews));
@@ -175,9 +202,9 @@ public class GoodDetailActivity extends BaseActivity {
                 ImageView imageView = new ImageView(getApplicationContext());
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams
                         .MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0,0,0,0);
+                params.setMargins(0, 0, 0, 0);
                 imageView.setLayoutParams(params);
-                imageView.setPadding(0,0,0,0);
+                imageView.setPadding(0, 0, 0, 0);
                 instance.displayImage(goodDetailInfo.detail_img_urls.get(i), imageView);
                 llGoodDetails.addView(imageView);
             }
@@ -185,12 +212,15 @@ public class GoodDetailActivity extends BaseActivity {
     }
 
     protected void initData() {
+        // TODO: 2016/7/26 需要被替换的数据源
         fakeDao = new FakeDao();
+        final GoodsDao dao = GoodsDao.getInstance(this);
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                goodDetailInfo = fakeDao.queryGoodDetailWithId(id);
+//                goodDetailInfo = fakeDao.queryGoodDetailWithId(id);
+                goodDetailInfo = dao.queryGoodDetailById(id);
                 mHandler.sendEmptyMessage(0);
             }
         }.start();
@@ -215,7 +245,7 @@ public class GoodDetailActivity extends BaseActivity {
                 break;
             case R.id.btn_share:
                 ShareDialogFragment shareDialogFragment = new ShareDialogFragment();
-                shareDialogFragment.show(getFragmentManager(),"shareDialogFragment");
+                shareDialogFragment.show(getFragmentManager(), "shareDialogFragment");
                 break;
             case R.id.btn_home:
                 intent2Activity(MainActivity.class);
@@ -238,20 +268,20 @@ public class GoodDetailActivity extends BaseActivity {
         List<CartBean> all = instance.findAll();
         for (CartBean cartBean :
                 all) {
-            if (id.equals(cartBean.good_id)){
-                instance.update(id,++cartBean.count);
-                ToastUtil.showToast(getApplicationContext(),"添加到購物車:"+ cartBean.count+++"件");
+            if (id.equals(cartBean.good_id)) {
+                instance.update(id, ++cartBean.count);
+                ToastUtil.showToast(getApplicationContext(), "添加到購物車:" + cartBean.count++ + "件");
                 return;
             }
         }
         CartBean info = new CartBean();
-        info.count=1;
-        info.good_id=id;
-        info.good_name=goodDetailInfo.good_name;
-        info.good_price=goodDetailInfo.price;
-        info.good_img_url=goodDetailInfo.reveal_img_urls.get(0);
+        info.count = 1;
+        info.good_id = id;
+        info.good_name = goodDetailInfo.good_name;
+        info.good_price = goodDetailInfo.price;
+        info.good_img_url = goodDetailInfo.thumbnail_img_url;
         instance.insert(info);
-        ToastUtil.showToast(getApplicationContext(),"添加到購物車:1件");
+        ToastUtil.showToast(getApplicationContext(), "添加到購物車:1件");
     }
 
     private class RevealImageAdapter extends PagerAdapter {

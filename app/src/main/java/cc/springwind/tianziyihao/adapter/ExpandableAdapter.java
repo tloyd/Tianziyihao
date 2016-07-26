@@ -6,21 +6,21 @@ import android.widget.BaseExpandableListAdapter;
 
 import java.util.List;
 
-import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.ui.fragment.HomeFragment;
 import cc.springwind.tianziyihao.widget.GoodListTitle;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
 /**
  * Created by HeFan on 2016/7/21 0021.
- *
+ * <p/>
  * 首页分类扩展列表的适配器
  */
 public class ExpandableAdapter extends BaseExpandableListAdapter {
     private HomeFragment homeFragment;
-    List<FakeDao.HomeGoodGroup> listOfHomeGoodGroup;
+    List<GoodsDao.HomeGoodGroup> listOfHomeGoodGroup;
 
-    public ExpandableAdapter(HomeFragment homeFragment, List<FakeDao.HomeGoodGroup> listOfHomeGoodGroup) {
+    public ExpandableAdapter(HomeFragment homeFragment, List<GoodsDao.HomeGoodGroup> listOfHomeGoodGroup) {
         this.homeFragment = homeFragment;
         this.listOfHomeGoodGroup = listOfHomeGoodGroup;
     }
@@ -36,12 +36,12 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public FakeDao.HomeGoodGroup getGroup(int groupPosition) {
+    public GoodsDao.HomeGoodGroup getGroup(int groupPosition) {
         return listOfHomeGoodGroup.get(groupPosition);
     }
 
     @Override
-    public FakeDao.HomeGoodChild getChild(int groupPosition, int childPosition) {
+    public GoodsDao.HomeGoodChild getChild(int groupPosition, int childPosition) {
         return listOfHomeGoodGroup.get(groupPosition).homeGoodChildList.get(childPosition);
     }
 

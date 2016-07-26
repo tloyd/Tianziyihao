@@ -18,12 +18,15 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
+import cc.springwind.tianziyihao.global.Constants;
+import cc.springwind.tianziyihao.utils.LogUtil;
+import cc.springwind.tianziyihao.utils.SpUtil;
 
 /**
  * Created by HeFan on 2016/7/7.
- *
+ * <p/>
  * 分类页面fragment
  */
 public class ClassifyFragment extends BaseFragment {
@@ -31,7 +34,7 @@ public class ClassifyFragment extends BaseFragment {
     ListView lvClassifyFirstLevel;
     @InjectView(R.id.fl_classify_content)
     FrameLayout flClassifyContent;
-    private List<FakeDao.ClassifyGroup> classifyGroupList;
+    private List<GoodsDao.ClassifyGroup> classifyGroupList;
     private ClassifyListAdapter adapter;
     private int mPosition;
     private FragmentTransaction ft;
@@ -52,27 +55,21 @@ public class ClassifyFragment extends BaseFragment {
             savedInstanceState) {
         View view = View.inflate(activity, R.layout.fragment_class, null);
         ButterKnife.inject(this, view);
-        activity.return_flag=false;
+        activity.return_flag = false;
 
         initUI();
         return view;
     }
 
     private void getData() {
-        FakeDao fakeDao = new FakeDao();
-        classifyGroupList = fakeDao.getClassifyGroupList();
-//        adapter.notifyDataSetChanged();
+        GoodsDao dao = GoodsDao.getInstance(getContext());
+        classifyGroupList = dao.getClassifyGroupList();
     }
 
     private void initUI() {
         adapter = new ClassifyListAdapter();
         lvClassifyFirstLevel.setAdapter(adapter);
         manager = getActivity().getSupportFragmentManager();
-//        fragment = new ClassifyContentFragment();
-//        args = new Bundle();
-//        args.putSerializable("tag", classifyGroupList.get(0));
-//        ft = manager.beginTransaction();
-//        ft.add(R.id.fl_classify_content, fragment).commit();
         ClassifyContentFragment fragment = new ClassifyContentFragment();
         Bundle args = new Bundle();
         args.putSerializable("tag", classifyGroupList.get(0));
@@ -93,6 +90,24 @@ public class ClassifyFragment extends BaseFragment {
                 ft.replace(R.id.fl_classify_content, fragment).commit();
             }
         });
+
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        LogUtil.log(activity.TAG, this, "onHiddenChanged:" + hidden);
+
+        if (hidden) {
+            return;
+        }
+
+        int position = SpUtil.getInt(getContext(), Constants.ITEM_CLICKED, -1);
+        if (position != -1) {
+//            ((View) lvClassifyFirstLevel.getItemAtPosition(position)).performClick();
+            // TODO: 2016/7/26 无法得到子项并执行点击操作
+//            lvClassifyFirstLevel.getChildAt(position).performClick();
+            SpUtil.putInt(getContext(), Constants.ITEM_CLICKED, -1);
+        }
     }
 
     @Override
@@ -108,7 +123,7 @@ public class ClassifyFragment extends BaseFragment {
         }
 
         @Override
-        public FakeDao.ClassifyGroup getItem(int position) {
+        public GoodsDao.ClassifyGroup getItem(int position) {
             return classifyGroupList.get(position);
         }
 
@@ -132,7 +147,7 @@ public class ClassifyFragment extends BaseFragment {
                 textView.setBackgroundColor(getResources().getColor(R.color.bg_Gray_light));
             }
             textView.setText(getItem(position).name);
-            textView.setPadding(5,10,5,10);
+            textView.setPadding(5, 10, 5, 10);
             textView.setTextColor(getResources().getColor(R.color.bg_Black));
             textView.setTextSize(20);
             return textView;

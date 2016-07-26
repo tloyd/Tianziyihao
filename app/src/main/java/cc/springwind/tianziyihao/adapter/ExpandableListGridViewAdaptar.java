@@ -6,7 +6,7 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
-import cc.springwind.tianziyihao.db.dao.FakeDao;
+import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.ui.fragment.HomeFragment;
 import cc.springwind.tianziyihao.widget.GoodListItem;
 
@@ -17,11 +17,16 @@ import cc.springwind.tianziyihao.widget.GoodListItem;
  */
 public class ExpandableListGridViewAdaptar extends BaseAdapter {
     private HomeFragment homeFragment;
-    List<FakeDao.HomeGoodChild> homeGoodChildren;
+    List<GoodsDao.HomeGoodChild> homeGoodChildren;
 
-    public ExpandableListGridViewAdaptar(HomeFragment homeFragment, List<FakeDao.HomeGoodChild> homeGoodChildList) {
+    public ExpandableListGridViewAdaptar(HomeFragment homeFragment, List<GoodsDao.HomeGoodChild> homeGoodChildList) {
         this.homeFragment = homeFragment;
-        homeGoodChildren = homeGoodChildList;
+
+        if (homeGoodChildList.size() <= 6) {
+            homeGoodChildren = homeGoodChildList;
+        } else {
+            homeGoodChildren = homeGoodChildList.subList(0, 6);
+        }
     }
 
     @Override
@@ -30,7 +35,7 @@ public class ExpandableListGridViewAdaptar extends BaseAdapter {
     }
 
     @Override
-    public FakeDao.HomeGoodChild getItem(int position) {
+    public GoodsDao.HomeGoodChild getItem(int position) {
         return homeGoodChildren.get(position);
     }
 

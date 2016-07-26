@@ -66,10 +66,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             case R.id.rb_cart:
                 arrayCopy(3);
                 LogUtil.debug(TAG,"last position is "+array[0]);
-                if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
+                /*if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
                     getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new
                             LoginFragment(), "LoginFragment").addToBackStack("LoginFragment").commit();
-                } else {
+                } else*/ {
                     controller.showFragment(3);
                 }
                 break;
