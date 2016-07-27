@@ -3,10 +3,14 @@ package cc.springwind.tianziyihao.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.GridView;
@@ -14,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -23,6 +27,7 @@ import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.adapter.ExpandableAdapter;
 import cc.springwind.tianziyihao.adapter.GridViewAdapter;
 import cc.springwind.tianziyihao.adapter.ViewPagerAdapter;
+import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.db.dao.UserDataDao;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
@@ -35,6 +40,8 @@ import cc.springwind.tianziyihao.utils.SpUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 import cc.springwind.tianziyihao.widget.WrapHeightExpandableListView;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Created by HeFan on 2016/7/7.
@@ -45,23 +52,13 @@ public class HomeFragment extends BaseFragment {
 
     private ViewPager viewPager;
     private View view;
-    private ArrayList<ImageView> listOfImageView;
-    private ArrayList<String> listOfImageUrl;
-    // 轮播图片的URL地址数组
-    private String[] imageUrls = new String[]{
-            "http://ww4.sinaimg.cn/mw690/651ebbd5gw1ew4dcw7rwjj20j60cs0vc.jpg", "http://ww2.sinaimg" +
-            ".cn/mw690/651ebbd5gw1ew4ddecr4ij21hc0u0tha.jpg", "http://ww1.sinaimg" +
-            ".cn/mw690/651ebbd5gw1ew4ddi3tjxj21hc0u0q95.jpg", "http://ww3.sinaimg" +
-            ".cn/mw690/651ebbd5gw1ew4ddjfy82j21hc0u07d6.jpg"
-    };
     private LinearLayout llHottestIndicator;
     private WrapHeightExpandableListView eListView;
     private List<GoodsDao.HomeGoodGroup> listOfHomeGoodGroup;
-    /*private FakeDao fakeDao;
-    private List<FakeDao.HomeLimitPurchaseGood> listOfHomeLimitPurchaseGood;*/
     // 设置控制播放标志位
     private boolean isplay = true;
     private GoodsDao goodsDao;
+    private List<HashMap<String, String>> list;
 
     @Nullable
     @Override
@@ -69,15 +66,15 @@ public class HomeFragment extends BaseFragment {
             savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, null);
         isplay = true;
-        initImageUrls();
         initLimitGridView();
-        initImageViewList();
         initDots();
         initViewPager();
         initExpandableListView();
+        initView();
         ButterKnife.inject(this, view);
         return view;
     }
+
 
     @Override
     public void onStart() {
@@ -126,16 +123,45 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        LogUtil.debug("-->>HomeFragment", "onHiddenChanged:" + hidden);
+        LogUtil.log(activity.TAG, this, "onHiddenChanged:" + hidden);
+
+        if (hidden)
+            isplay = false;
+        else
+            isplay = true;
+    }
+
+    private void initView() {
+        final EditText editText = (EditText) view.findViewById(R.id.index_search_edit);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    LogUtil.log(activity.TAG, HomeFragment.this, "onKey");
+                    InputMethodManager imm = (InputMethodManager) v.getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    String key = editText.getText().toString();
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(),
+                                0);
+                    }
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("good_name", key);
+                    ClassifyListFragment fragment = new ClassifyListFragment();
+                    fragment.setArguments(bundle);
+                    ft.replace(R.id.fl_content, fragment).addToBackStack("ClassifyListFragment").commit();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     /**
      * 初始化显示购买的三个item
      */
     private void initLimitGridView() {
-        /*fakeDao = new FakeDao();
-        listOfHomeLimitPurchaseGood = fakeDao.getHomeLimitPurchaseList();*/
-
         goodsDao = GoodsDao.getInstance(getContext());
         List<GoodsDao.HomeLimitPurchaseGood> homeLimitPurchaseList = goodsDao.getHomeLimitPurchaseList();
         WrapHeightGridView gv_limit_home = new WrapHeightGridView(getContext());
@@ -200,17 +226,62 @@ public class HomeFragment extends BaseFragment {
                     controller.showFragment(4);
                 }
                 break;
-            case R.id.index_search_button://搜索按钮
+            case R.id.index_search_button://信息按钮
+                ImageFragment fragment = new ImageFragment();
+                Bundle args = new Bundle();
+                args.putString("title", "信息内容");
+                args.putString("content_url", "http://ww1.sinaimg.cn/mw690/94dfe97bgw1f563jhy60mj20hs1jt79q.jpg");
+                fragment.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment,
+                        "ImageFragment").addToBackStack("ImageFragment").commit();
                 break;
 
             case R.id.btn_get_scole://签到赚积分
-                getScore();
+                if (SpUtil.getBoolean(getContext(), Constants.IS_LOGIN, false)) {
+                    getScore();
+                } else {
+                    ToastUtil.showToast(getContext(), "请先登录！");
+                    getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new
+                            LoginFragment(), "LoginFragment").addToBackStack("LoginFragment").commit();
+                }
                 break;
 
             case R.id.btn_get_share://分享有礼
-
+                showShare();
                 break;
         }
+    }
+
+    /**
+     * 调用此方法，即可打开一键分享功能进行分享
+     */
+    private void showShare() {
+        ShareSDK.initSDK(getContext());
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+        // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle("title标题");
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText("我是分享文本");
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://sharesdk.cn");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment("我是测试评论文本");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://sharesdk.cn");
+
+        // 启动分享GUI
+        oks.show(getContext());
     }
 
     /**
@@ -291,49 +362,16 @@ public class HomeFragment extends BaseFragment {
         expandableListView.setLayoutParams(params);
     }
 
-
-    /*private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            LogUtil.debug(activity.TAG, "receive msg:" + msg.what);
-            if (mHandler.hasMessages(MSG_UPDATE_IMAGE)) {
-                LogUtil.debug(activity.TAG, "hasMessages msg:" + msg.what);
-
-                mHandler.removeMessages(MSG_UPDATE_IMAGE);
-            }
-            switch (msg.what) {
-                case MSG_UPDATE_IMAGE:
-                    LogUtil.debug(activity.TAG, "MSG_UPDATE_IMAGE");
-                    currentItem++;
-                    viewPager.setCurrentItem(currentItem);
-                    //准备下次播放
-                    mHandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE, MSG_DELAY);
-                    break;
-                case MSG_KEEP_SILENT:
-                    LogUtil.debug(activity.TAG, "MSG_KEEP_SILENT");
-                    //只要不发送消息就暂停了
-                    break;
-                case MSG_BREAK_SILENT:
-                    LogUtil.debug(activity.TAG, "MSG_BREAK_SILENT");
-                    mHandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE, MSG_DELAY);
-                    break;
-                case MSG_PAGE_CHANGED:
-                    LogUtil.debug(activity.TAG, "MSG_PAGE_CHANGED");
-                    //记录当前的页号，避免播放的时候页面显示不正确。
-                    currentItem = msg.arg1;
-                    break;
-            }
-        }
-    };*/
-
     private ImageView[] mBottomImages;//底部只是当前页面的小圆点
 
     /**
      * 初始化轮播图片底下显示位置的小圆点
      */
     private void initDots() {
+        list = new FakeDao().getScrollImageUrls();
+
         //创建底部指示位置的导航栏
-        mBottomImages = new ImageView[listOfImageView.size()];
+        mBottomImages = new ImageView[list.size()];
         llHottestIndicator = (LinearLayout) view.findViewById(R.id.ll_hottest_indicator);
 
         for (int i = 0; i < mBottomImages.length; i++) {
@@ -354,36 +392,11 @@ public class HomeFragment extends BaseFragment {
     }
 
     /**
-     * 初始化轮播广告图片URL地址列表
-     */
-    private void initImageUrls() {
-        listOfImageUrl = new ArrayList<>();
-        for (String url : imageUrls) {
-            listOfImageUrl.add(url);
-        }
-    }
-
-    /**
-     * 初始化轮播图片列表
-     */
-    private void initImageViewList() {
-        listOfImageView = new ArrayList<>();
-        for (int i = 0; i < imageUrls.length; i++) {
-            ImageView view = new ImageView(activity);
-            view.setTag(imageUrls[i]);
-            if (i == 0)//给一个默认图
-                view.setBackgroundResource(R.drawable.logo);
-            view.setScaleType(ImageView.ScaleType.FIT_XY);
-            listOfImageView.add(view);
-        }
-    }
-
-    /**
      * 初始化轮播图片ViewPager控件
      */
     private void initViewPager() {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new ViewPagerAdapter(listOfImageView, listOfImageUrl));
+        viewPager.setAdapter(new ViewPagerAdapter(list, this));
         viewPager.addOnPageChangeListener(new PageChangeListener());
         viewPager.setCurrentItem(Integer.MAX_VALUE / 2);//默认在中间，使用户看不到边界
         //开始轮播效果
@@ -391,6 +404,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void run() {
                 super.run();
+                // TODO: 2016/7/27 0027 有的情况会停住
                 while (isplay) {
                     try {
                         Thread.sleep(3500);
@@ -419,6 +433,8 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public void onPageSelected(int position) {
+            LogUtil.log(activity.TAG, this, "onPageSelected:" + position);
+            position %= mBottomImages.length;
             int total = mBottomImages.length;
             for (int j = 0; j < total; j++) {
                 if (j == position) {

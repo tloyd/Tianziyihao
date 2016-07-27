@@ -6,7 +6,6 @@
               android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/ll_classify_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -51,6 +50,7 @@
     <!--android:layout_height="match_parent">-->
 
     <LinearLayout
+        android:id="@+id/ll_classify_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/bg_White"
@@ -89,10 +89,23 @@
             android:text="价格"/>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lv_classify_list"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/tv_Gray"></ListView>
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="没有数据!"
+            android:textSize="@dimen/large_text_size"/>
+
+        <ListView
+            android:visibility="gone"
+            android:id="@+id/lv_classify_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/tv_Gray"></ListView>
+    </FrameLayout>
 </LinearLayout>

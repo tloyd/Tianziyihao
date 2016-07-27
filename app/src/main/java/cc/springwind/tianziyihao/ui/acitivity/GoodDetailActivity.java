@@ -1,6 +1,5 @@
 package cc.springwind.tianziyihao.ui.acitivity;
 
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,8 +16,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +28,12 @@ import cc.springwind.tianziyihao.db.bean.CartBean;
 import cc.springwind.tianziyihao.db.dao.CartDao;
 import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
-import cc.springwind.tianziyihao.dialog.ShareDialogFragment;
 import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.ui.fragment.FragmentController;
-import cc.springwind.tianziyihao.utils.ScreenUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Created by HeFan on 2016/7/14.
@@ -102,39 +99,8 @@ public class GoodDetailActivity extends BaseActivity {
             ArrayList<ImageView> imageViews = new ArrayList<>(goodDetailInfo.reveal_img_urls.size());
             for (int i = 0; i < goodDetailInfo.reveal_img_urls.size(); i++) {
                 final ImageView imageView = new ImageView(getApplicationContext());
-//                instance.displayImage(goodDetailInfo.reveal_img_urls.get(i), imageView);
-                instance.loadImage(goodDetailInfo.reveal_img_urls.get(i), new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        float scale = (float) loadedImage.getHeight() / loadedImage.getWidth();
-
-                        int screenWidthPixels = ScreenUtil.getScreenWidth(getApplicationContext());
-                        int screenHeightPixels = ScreenUtil.getScreenHeight(getApplicationContext());
-                        int height = (int) (screenWidthPixels * scale);
-
-                        if (height < screenHeightPixels) {
-                            height = screenHeightPixels;
-                        }
-
-                        ViewGroup.LayoutParams params = new ViewPager.LayoutParams();
-                        params.height = height;
-                        params.width = screenWidthPixels;
-                        imageView.setLayoutParams(params);
-                        imageView.setImageBitmap(loadedImage);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                    }
-                });
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                instance.displayImage(goodDetailInfo.reveal_img_urls.get(i), imageView);
                 imageViews.add(imageView);
             }
             vpDetailScroll.setAdapter(new RevealImageAdapter(imageViews));
@@ -200,11 +166,7 @@ public class GoodDetailActivity extends BaseActivity {
             ImageLoader instance = ImageLoader.getInstance();
             for (int i = 0; i < goodDetailInfo.detail_img_urls.size(); i++) {
                 ImageView imageView = new ImageView(getApplicationContext());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams
-                        .MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, 0, 0, 0);
-                imageView.setLayoutParams(params);
-                imageView.setPadding(0, 0, 0, 0);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 instance.displayImage(goodDetailInfo.detail_img_urls.get(i), imageView);
                 llGoodDetails.addView(imageView);
             }
@@ -244,8 +206,7 @@ public class GoodDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_share:
-                ShareDialogFragment shareDialogFragment = new ShareDialogFragment();
-                shareDialogFragment.show(getFragmentManager(), "shareDialogFragment");
+                showShare();
                 break;
             case R.id.btn_home:
                 intent2Activity(MainActivity.class);
@@ -261,6 +222,38 @@ public class GoodDetailActivity extends BaseActivity {
             case R.id.tv_buy_now:
                 break;
         }
+    }
+
+    /**
+     * 调用此方法，即可打开一键分享功能进行分享
+     */
+    private void showShare() {
+        ShareSDK.initSDK(this);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+        // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle("title标题");
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText("我是分享文本");
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://sharesdk.cn");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment("我是测试评论文本");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://sharesdk.cn");
+
+        // 启动分享GUI
+        oks.show(this);
     }
 
     private void add2Cart() {

@@ -8,18 +8,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.springwind.tianziyihao.db.DBHelp;
 import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 
 /**
  * Created by HeFan on 2016/7/26.
  */
-public class GoodsDao {
-    private DBHelp mDBHelp;
+public class GoodsDao implements Serializable {
     private static GoodsDao dao = null;
+    public static String path = "data/data/cc.springwind.tianziyihao/files/tzyh.db";
 
     private GoodsDao(Context context) {
-        mDBHelp = new DBHelp(context);
     }
 
     public static GoodsDao getInstance(Context context) {
@@ -30,7 +28,8 @@ public class GoodsDao {
     }
 
     public List<HomeLimitPurchaseGood> getHomeLimitPurchaseList() {
-        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+//        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
         List<HomeLimitPurchaseGood> list = new ArrayList<>();
 
         Cursor cursor = db.query("goods", null, "is_limit = ?", new String[]{"1"}, null, null, "_id desc");
@@ -51,7 +50,7 @@ public class GoodsDao {
 
     public GoodDetailInfo queryGoodDetailById(String id) {
         GoodDetailInfo goodDetailInfo = new GoodDetailInfo();
-        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.query("goods", null, "good_id = ?", new String[]{id}, null, null, null);
 
         while (cursor.moveToNext()) {
@@ -74,7 +73,7 @@ public class GoodsDao {
     }
 
     private List<String> getGoodData(String id, int i) {
-        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.query("good_data", null, "good_id = ? and type=?", new String[]{id, i + ""}, null, null,
                 null);
         List<String> list = new ArrayList<>();
@@ -89,7 +88,7 @@ public class GoodsDao {
 
     public List<HomeGoodGroup> getHomeGoodLists() {
         List<HomeGoodGroup> list = new ArrayList<>();
-        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
 
         Cursor cursor = db.query(true, "goods", new String[]{"first_class_id"}, null, null, null, null, null,
                 null);
@@ -128,7 +127,7 @@ public class GoodsDao {
     }
 
     public List<ClassifyGroup> getClassifyGroupList() {
-        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
         List<ClassifyGroup> groupList = new ArrayList<>();
 
         Cursor cursor = db.query(true, "goods", new String[]{"first_class_id"}, null, null, null, null, null,
@@ -167,14 +166,35 @@ public class GoodsDao {
         return groupList;
     }
 
-    public List<GoodSimpleInfo> getClassifyGoodList(String first_class_id, String second_class_id, String
+    public List<GoodSimpleInfo> getClassifyGoodListByClassId(String first_class_id, String second_class_id, String
             aDefault) {
         List<GoodSimpleInfo> mList = new ArrayList<>();
-        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
 
         Cursor cursor = db.query("goods", null, "first_class_id=? and second_class_id=?", new
                         String[]{first_class_id, second_class_id}, null, null, aDefault + " desc",
                 null);
+
+        while (cursor.moveToNext()) {
+            GoodSimpleInfo info = new GoodSimpleInfo();
+            info.id = cursor.getString(cursor.getColumnIndex("good_id"));
+            info.name = cursor.getString(cursor.getColumnIndex("good_name"));
+            info.price = cursor.getFloat(cursor.getColumnIndex("good_price"));
+            info.url = cursor.getString(cursor.getColumnIndex("thumbnail_img_url"));
+            info.saleCount = cursor.getInt(cursor.getColumnIndex("sale_count"));
+            mList.add(info);
+        }
+
+        cursor.close();
+        db.close();
+        return mList;
+    }
+
+    public List<GoodSimpleInfo> getClassifyGoodListByGoodName(String good_name) {
+        List<GoodSimpleInfo> mList = new ArrayList<>();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
+
+        Cursor cursor = db.rawQuery("select * from goods where good_name like '%" + good_name + "%'", null);
 
         while (cursor.moveToNext()) {
             GoodSimpleInfo info = new GoodSimpleInfo();

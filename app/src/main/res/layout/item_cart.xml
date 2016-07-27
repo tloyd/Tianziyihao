@@ -22,7 +22,7 @@
             android:id="@+id/iv_cart_item"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_com_sina_weibo_sdk_login_button_with_frame_logo_focused"/>
+            android:src="@drawable/invite_twitter"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

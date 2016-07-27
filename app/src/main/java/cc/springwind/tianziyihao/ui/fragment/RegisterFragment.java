@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.sina.weibo.sdk.utils.MD5;
-
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
@@ -22,11 +20,12 @@ import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.db.bean.UserDataBean;
 import cc.springwind.tianziyihao.db.dao.UserDataDao;
-import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
+import cc.springwind.tianziyihao.utils.MD5;
 import cc.springwind.tianziyihao.utils.SpUtil;
 import cc.springwind.tianziyihao.utils.TextCheckUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;

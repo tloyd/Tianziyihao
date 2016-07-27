@@ -4,10 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.Serializable;
+
 /**
  * Created by HeFan on 2016/7/18.
  */
-public class DBHelp extends SQLiteOpenHelper {
+public class DBHelp extends SQLiteOpenHelper implements Serializable {
 
     public DBHelp(Context context) {
         super(context, "tzyh.db", null, 1);

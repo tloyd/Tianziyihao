@@ -11,19 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sina.weibo.sdk.utils.MD5;
-
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
+import cc.springwind.tianziyihao.utils.MD5;
 import cc.springwind.tianziyihao.utils.SpUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 import cn.smssdk.EventHandler;
@@ -131,8 +130,6 @@ public class LoginFragment extends BaseFragment {
                 } else {
                     ToastUtil.showToast(getContext(), "密码或帐号不正确,请重新输入");
                 }
-
-                //SpUtil.putBoolean(getContext(), Constants.IS_LOGIN,);
                 break;
             case R.id.tv_register:
                 //register();

@@ -14,6 +14,6 @@
         android:gravity="center"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:text="商品分类"
+        android:text="活动"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 </LinearLayout>

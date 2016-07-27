@@ -12,10 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@color/lawngreen"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="5dp">
-
         <ImageView
             android:id="@+id/index_top_logo"
             android:layout_width="wrap_content"
@@ -29,7 +30,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:singleLine="true"
             android:layout_weight="1"
+            android:imeOptions="actionSearch"
             android:background="@color/white"
             android:drawableLeft="@drawable/tabbar_discover_highlighted"
             android:hint="@string/index_search_edit_hint"
@@ -65,7 +68,8 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewpager"
                     android:layout_width="wrap_content"
-                    android:layout_height="150dp"/>
+                    android:layout_height="150dp"
+                    android:background="@color/bg_White"/>
 
                 <LinearLayout
                     android:id="@+id/ll_hottest_indicator"

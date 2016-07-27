@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,7 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
@@ -51,10 +51,10 @@ public class ClassifyListFragment extends BaseFragment {
     TextView tvPrice;
     @InjectView(R.id.lv_classify_list)
     ListView lvClassifyList;
-//    @InjectView(R.id.wrl_classify_list)
-//    SwipeRefreshLayout wrlClassifyList;
-
-    private FakeDao fakeDao;
+    @InjectView(R.id.tv_no_data)
+    TextView tvNoData;
+    @InjectView(R.id.ll_classify_top)
+    LinearLayout llClassifyTop;
     private List<GoodsDao.GoodSimpleInfo> goodSimpleInfoList;
     private ClassifyListAdapter adapter;
     private GoodsDao dao;
@@ -64,17 +64,17 @@ public class ClassifyListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fakeDao = new FakeDao();
         activity.return_flag = false;
-
+        dao = GoodsDao.getInstance(getContext());
+        String good_name = getArguments().getString("good_name");
+        if (good_name != null) {
+//            llClassifyTop.setVisibility(View.GONE);
+            goodSimpleInfoList = dao.getClassifyGoodListByGoodName(good_name);
+            return;
+        }
         second_class_id = getArguments().getString("second_class_id");
         first_class_id = getArguments().getString("first_class_id");
-
-        dao = GoodsDao.getInstance(getContext());
-
-        goodSimpleInfoList = dao.getClassifyGoodList(first_class_id, second_class_id, "_id");
-
-//        goodSimpleInfoList = fakeDao.getClassifyGoodListBySortType("default");
+        goodSimpleInfoList = dao.getClassifyGoodListByClassId(first_class_id, second_class_id, "_id");
     }
 
     @Nullable
@@ -85,11 +85,15 @@ public class ClassifyListFragment extends BaseFragment {
         ButterKnife.inject(this, view);
         ((MainActivity) getActivity()).setControllBarVisible(false);
         initUI();
-
         return view;
     }
 
     private void initUI() {
+        if (goodSimpleInfoList.size() <= 0) {
+            return;
+        }
+        tvNoData.setVisibility(View.GONE);
+        lvClassifyList.setVisibility(View.VISIBLE);
         adapter = new ClassifyListAdapter();
         lvClassifyList.setAdapter(adapter);
         lvClassifyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -115,27 +119,33 @@ public class ClassifyListFragment extends BaseFragment {
         LogUtil.log(activity.TAG, this, "onDestroy");
     }
 
-    @OnClick({R.id.tv_default, R.id.tv_new, R.id.tv_sale, R.id.tv_price})
+    @OnClick({R.id.tv_default, R.id.iv_back, R.id.tv_new, R.id.tv_sale, R.id.tv_price, R.id.et_search, R.id.iv_home})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 getFragmentManager().popBackStack();
                 break;
             case R.id.tv_default:
-                goodSimpleInfoList = dao.getClassifyGoodList(first_class_id, second_class_id, "_id");
+                goodSimpleInfoList = dao.getClassifyGoodListByClassId(first_class_id, second_class_id, "_id");
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.tv_new:
-                goodSimpleInfoList = dao.getClassifyGoodList(first_class_id, second_class_id, "date_on_sale");
+                goodSimpleInfoList = dao.getClassifyGoodListByClassId(first_class_id, second_class_id, "date_on_sale");
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.tv_sale:
-                goodSimpleInfoList = dao.getClassifyGoodList(first_class_id, second_class_id, "sale_count");
+                goodSimpleInfoList = dao.getClassifyGoodListByClassId(first_class_id, second_class_id, "sale_count");
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.tv_price:
-                goodSimpleInfoList = dao.getClassifyGoodList(first_class_id, second_class_id, "good_price");
+                goodSimpleInfoList = dao.getClassifyGoodListByClassId(first_class_id, second_class_id, "good_price");
                 adapter.notifyDataSetChanged();
+                break;
+            case R.id.iv_home:
+                getFragmentManager().popBackStack();
+                ((MainActivity) getActivity()).setRgTabClick(0);
+                break;
+            case R.id.et_search:
                 break;
         }
     }

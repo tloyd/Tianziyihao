@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cc.springwind.tianziyihao.entity.GoodDetailInfo;
@@ -17,7 +18,7 @@ import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 /**
  * Created by HeFan on 2016/7/12.
  */
-public class FakeDao implements Serializable{
+public class FakeDao implements Serializable {
     static String jsonStrOfHomeGroupLists = "[\n" +
             "{\n" +
             "\"name\":\"生鲜肉类\",\n" +
@@ -159,7 +160,7 @@ public class FakeDao implements Serializable{
             "}\n" +
             "]";
 
-    private String jsonStrOfGoodSimpleInfo="[\n" +
+    private String jsonStrOfGoodSimpleInfo = "[\n" +
             "{\n" +
             "\"id\":\"zr001\",\n" +
             "\"name\":\"猪前腿肉 400g\",\n" +
@@ -331,6 +332,28 @@ public class FakeDao implements Serializable{
         return goodSimpleInfoList;
     }
 
+    public List<HashMap<String, String>> getScrollImageUrls() {
+        List<HashMap<String, String>> list = new ArrayList<>();
+        HashMap<String, String> map1 = new HashMap<>();
+        map1.put("small", "http://ww1.sinaimg.cn/mw690/8282c7cfjw1f555o9qomij20c808c3z9.jpg");
+        map1.put("big", "http://ww1.sinaimg.cn/mw690/94dfe97bgw1f563jgqp3fj20hs1kh453.jpg");
+        list.add(map1);
+        HashMap<String, String> map2 = new HashMap<>();
+        map2.put("small", "http://ww4.sinaimg.cn/mw690/8282c7cfjw1f555o9o8poj20c808cdh3.jpg");
+        map2.put("big", "http://ww4.sinaimg.cn/mw690/94dfe97bgw1f563jh08j8j20hs1g6q9v.jpg");
+        list.add(map2);
+        HashMap<String, String> map3 = new HashMap<>();
+        map3.put("small", "http://ww2.sinaimg.cn/mw690/938718b5jw1epx05dfpqwj20bs06uwey.jpg");
+        map3.put("big", "http://ww3.sinaimg.cn/mw690/94dfe97bgw1f563jhhw79j20hs1fv43a.jpg");
+        list.add(map3);
+        HashMap<String, String> map4 = new HashMap<>();
+        map4.put("small", "http://ww4.sinaimg.cn/mw690/8282c7cfjw1f555o9xsydj20c808c3z7.jpg");
+        map4.put("big", "http://ww1.sinaimg.cn/mw690/94dfe97bgw1f563jhy60mj20hs1jt79q.jpg");
+        list.add(map4);
+
+        return list;
+    }
+
     public class HomeGoodGroup {
         public String name;
         public List<HomeGoodChild> homeGoodChildList;
@@ -361,7 +384,7 @@ public class FakeDao implements Serializable{
         public List<SecondLevelGroup> groupList;
     }
 
-    public class SecondLevelGroup implements Serializable{
+    public class SecondLevelGroup implements Serializable {
         public String id;
         public String name;
         public String url;
