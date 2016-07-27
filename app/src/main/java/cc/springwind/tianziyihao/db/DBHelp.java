@@ -38,12 +38,31 @@ public class DBHelp extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE userdata " +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT , " +
                 "scole INTEGER default 0, " +
-                "user_id INTEGER NOT NULL)");//FOREIGN KEY user_id REFERENCES userinfo(_id)
+                "user_id INTEGER NOT NULL)");
+        // TODO: 2016/7/24 0024 外键到底能不能用
+        //FOREIGN KEY user_id REFERENCES userinfo(_id)
         /*创建触发器,在注册新用户时候,自动初始化生成新用户的userdata表,*/
         /*db.execSQL("CREATE TRIGGER init_user_data AFTER INSERT ON userinfo " +
                 "BEGIN" +
                 "INSERT INTO userdata (user_id) VALUES (SELECT _id FROM userinfo)" +
                 "END");*/
+        db.execSQL("CREATE TABLE goods (\n" +
+                "       _id INTEGER PRIMARY KEY AUTOINCREMENT,       \n" +
+                "       good_id VARCHAR(20) NOT NULL,       \n" +
+                "       first_class_id VARCHAR(20),       \n" +
+                "       second_class_id VARCHAR(20),      \n" +
+                "       name VARCHAR(20),       \n" +
+                "       price REAL DEFAULT 0,       \n" +
+                "       origin_price REAL DEFAULT 0,       \n" +
+                "       is_top BOOLEAN DEFAULT 0,       \n" +
+                "       is_home BOOLEAN DEFAULT 0,       \n" +
+                "       thumbnail_img_url TEXT,       \n" +
+                "       description TEXT,\n" +
+                "       note TEXT,\n" +
+                "       sales_count INTEGER,       \n" +
+                "       date_on_sale DATE,       \n" +
+                "       stock INTEGER\n" +
+                ")");
     }
 
     @Override
