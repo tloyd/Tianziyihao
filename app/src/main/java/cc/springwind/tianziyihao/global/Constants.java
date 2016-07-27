@@ -61,4 +61,5 @@ public interface Constants {
     String IS_LOGIN = "is_login";
     String CURRENT_USER = "current_user";
     String SIGN_DATE = "sign_date";
+    String ITEM_CLICKED = "item_clicked";
 }

@@ -46,22 +46,27 @@ public class DBHelp extends SQLiteOpenHelper {
                 "BEGIN" +
                 "INSERT INTO userdata (user_id) VALUES (SELECT _id FROM userinfo)" +
                 "END");*/
-        db.execSQL("CREATE TABLE goods (\n" +
-                "       _id INTEGER PRIMARY KEY AUTOINCREMENT,       \n" +
-                "       good_id VARCHAR(20) NOT NULL,       \n" +
-                "       first_class_id VARCHAR(20),       \n" +
-                "       second_class_id VARCHAR(20),      \n" +
-                "       name VARCHAR(20),       \n" +
-                "       price REAL DEFAULT 0,       \n" +
-                "       origin_price REAL DEFAULT 0,       \n" +
-                "       is_top BOOLEAN DEFAULT 0,       \n" +
-                "       is_home BOOLEAN DEFAULT 0,       \n" +
-                "       thumbnail_img_url TEXT,       \n" +
-                "       description TEXT,\n" +
-                "       note TEXT,\n" +
-                "       sales_count INTEGER,       \n" +
-                "       date_on_sale DATE,       \n" +
-                "       stock INTEGER\n" +
+        db.execSQL("create table goods(\n" +
+                "_id integer primary key autoincrement,\n" +
+                "first_class_id integer not null,\n" +
+                "second_class_id integer not null,\n" +
+                "good_id integer not null,\n" +
+                "good_name text default \"商品\",\n" +
+                "good_price real default 10.0,\n" +
+                "good_price_origin real default 20.0,\n" +
+                "thumbnail_img_url text default \"http://tva4.sinaimg.cn/crop.22.9.214.214" +
+                ".180/5d60116cgw1ewot81f3evj207e07emx8.jpg\",\n" +
+                "is_limit boolean default 1,\n" +
+                "is_home boolean default 1,\n" +
+                "description text default \"商品简介\",\n" +
+                "note text default \"注意事项\",\n" +
+                "rate_score real default 0,\n" +
+                "date_on_sale date,\n" +
+                "sale_count integer default 0)");
+        db.execSQL("create table good_data(\n" +
+                "good_id integer,\n" +
+                "data text,\n" +
+                "type integer\n" +
                 ")");
     }
 

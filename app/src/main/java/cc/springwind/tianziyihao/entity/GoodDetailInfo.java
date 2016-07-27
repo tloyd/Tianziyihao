@@ -8,7 +8,7 @@ import java.util.List;
 public class GoodDetailInfo {
     public String good_id;
 
-    public List< String> reveal_img_urls ;
+    public List<String> reveal_img_urls;
 
     public String good_name;
 
@@ -16,20 +16,18 @@ public class GoodDetailInfo {
 
     public String price;
 
+    public String thumbnail_img_url;
+
     public String price_original;
 
     public String notes;
 
-    public List<String> good_params ;
+    public List<String> good_params;
 
     public String service_support;
 
     public String comments;
 
-    public List<String> detail_img_urls ;
+    public List<String> detail_img_urls;
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }
