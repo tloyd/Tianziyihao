@@ -1,5 +1,6 @@
 package cc.springwind.tianziyihao.ui.acitivity;
 
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 import cc.springwind.tianziyihao.global.BaseActivity;
 import cc.springwind.tianziyihao.ui.fragment.FragmentController;
+import cc.springwind.tianziyihao.utils.ScreenUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
@@ -158,6 +162,7 @@ public class GoodDetailActivity extends BaseActivity {
             for (int i = 0; i < goodDetailInfo.good_params.size(); i++) {
                 TextView textView = new TextView(getApplicationContext());
                 textView.setText(goodDetailInfo.good_params.get(i));
+                textView.setTextColor(getResources().getColor(R.color.tv_dark_Gray));
                 llGoodParams.addView(textView);
             }
         }
@@ -165,10 +170,54 @@ public class GoodDetailActivity extends BaseActivity {
         if (goodDetailInfo.detail_img_urls.size() > 0) {
             ImageLoader instance = ImageLoader.getInstance();
             for (int i = 0; i < goodDetailInfo.detail_img_urls.size(); i++) {
-                ImageView imageView = new ImageView(getApplicationContext());
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                instance.displayImage(goodDetailInfo.detail_img_urls.get(i), imageView);
-                llGoodDetails.addView(imageView);
+                /*LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(this),
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                imageView.setLayoutParams(params);
+                imageView.setPadding(5, 0, 5, 0);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);*/
+//                instance.displayImage(goodDetailInfo.detail_img_urls.get(i), imageView);
+                instance.loadImage(goodDetailInfo.detail_img_urls.get(i), new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String s, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                        ImageView imageView = new ImageView(getApplicationContext());
+
+                        float scale = (float) bitmap.getHeight() / bitmap.getWidth();
+
+                        int screenWidthPixels = ScreenUtil.getScreenWidth(GoodDetailActivity.this);
+//                        int screenHeightPixels = ScreenUtil.getScreenHeight(GoodDetailActivity.this);
+                        int height = (int) (screenWidthPixels * scale);
+
+                        /*if (height < screenHeightPixels) {
+                            height = screenHeightPixels;
+                        }*/
+                        // TODO: 2016/7/27 0027 是不是没有加载到布局的Layoutparams不能直接get
+                        ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
+                        params.height = height;
+                        params.width = screenWidthPixels;
+
+                        imageView.setLayoutParams(params);
+                        imageView.setPadding(5, 0, 5, 0);
+//                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        imageView.setImageBitmap(bitmap);
+                        llGoodDetails.addView(imageView);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String s, View view) {
+
+                    }
+                });
+
             }
         }
     }
