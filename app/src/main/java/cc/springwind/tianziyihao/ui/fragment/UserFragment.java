@@ -65,7 +65,7 @@ public class UserFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.tbi_clear, R.id.btn_log_out, R.id.tbi_about_us})
+    @OnClick({R.id.tbi_clear, R.id.btn_log_out, R.id.tbi_about_us,R.id.tbi_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tbi_clear:
@@ -84,6 +84,10 @@ public class UserFragment extends BaseFragment {
                 fragment.setArguments(args);
                 getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment,
                         "ImageFragment").addToBackStack("ImageFragment").commit();
+                break;
+
+            case R.id.tbi_address:
+
                 break;
         }
     }

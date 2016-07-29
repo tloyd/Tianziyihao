@@ -72,6 +72,16 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "data text,\n" +
                 "type integer\n" +
                 ")");*/
+
+        db.execSQL("create table user_order(" +
+                "order_id integer primary key autoincrement," +
+                "username text," +
+                "sum_price real," +
+                "receive_name text," +
+                "receive_tel text," +
+                "receive_address text," +
+                "order_flag integer," +
+                ")");
     }
 
     @Override
