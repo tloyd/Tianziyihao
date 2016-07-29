@@ -14,6 +14,7 @@ import cc.springwind.tianziyihao.ui.fragment.FragmentController;
 import cc.springwind.tianziyihao.ui.fragment.LoginFragment;
 import cc.springwind.tianziyihao.utils.LogUtil;
 import cc.springwind.tianziyihao.utils.SpUtil;
+import cc.springwind.tianziyihao.utils.ToastUtil;
 
 public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
 
@@ -50,32 +51,33 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         switch (checkedId) {
             case R.id.rb_home:
                 arrayCopy(0);
-                LogUtil.debug(TAG,"last position is "+array[0]);
+                LogUtil.debug(TAG, "last position is " + array[0]);
                 controller.showFragment(0);
                 break;
             case R.id.rb_activity:
                 arrayCopy(1);
-                LogUtil.debug(TAG,"last position is "+array[0]);
+                LogUtil.debug(TAG, "last position is " + array[0]);
                 controller.showFragment(1);
                 break;
             case R.id.rb_class:
                 arrayCopy(2);
-                LogUtil.debug(TAG,"last position is "+array[0]);
+                LogUtil.debug(TAG, "last position is " + array[0]);
                 controller.showFragment(2);
                 break;
             case R.id.rb_cart:
                 arrayCopy(3);
-                LogUtil.debug(TAG,"last position is "+array[0]);
-                /*if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
+                LogUtil.debug(TAG, "last position is " + array[0]);
+                if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
+                    ToastUtil.showToast(getApplicationContext(), "请先登录!");
                     getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new
                             LoginFragment(), "LoginFragment").addToBackStack("LoginFragment").commit();
-                } else*/ {
+                } else {
                     controller.showFragment(3);
                 }
                 break;
             case R.id.rb_me:
                 arrayCopy(4);
-                LogUtil.debug(TAG,"last position is "+array[0]);
+                LogUtil.debug(TAG, "last position is " + array[0]);
                 if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
                     /*getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new
                             LoginFragment()).commit();*/
@@ -91,13 +93,13 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (return_flag){
-            LogUtil.debug(TAG,"performclick-->>"+array[0]);
+        if (return_flag) {
+            LogUtil.debug(TAG, "performclick-->>" + array[0]);
             setRgTabClick(array[0]);
         }
     }
 
-    public void setRgTabClick(int position){
+    public void setRgTabClick(int position) {
         rgTab.getChildAt(position).performClick();
     }
 

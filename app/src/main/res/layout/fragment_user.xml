@@ -103,34 +103,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:id="@+id/ll_my_order"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:background="@color/bg_White"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/sym_action_email"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="我的订单"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right|center_vertical"
-                    android:text="查看全部订单  >  "/>
-            </LinearLayout>-->
-
             <cc.springwind.tianziyihao.widget.TextButtonItem
                 android:id="@+id/tbi_check_all_orders"
                 android:layout_width="match_parent"

@@ -114,6 +114,7 @@ public class GoodsDao implements Serializable {
                 child.name = goods.getString(goods.getColumnIndex("good_name"));
                 child.price = String.valueOf(goods.getFloat(goods.getColumnIndex("good_price")));
                 child.url = goods.getString(goods.getColumnIndex("thumbnail_img_url"));
+                child.priceOrigin=goods.getString(goods.getColumnIndex("good_price_origin"));
 
                 childList.add(child);
             }
@@ -243,6 +244,7 @@ public class GoodsDao implements Serializable {
         public String name;
         public String price;
         public String url;
+        public String priceOrigin;
     }
 
     public class HomeLimitPurchaseGood {

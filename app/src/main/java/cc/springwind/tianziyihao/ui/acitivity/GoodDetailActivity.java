@@ -29,12 +29,13 @@ import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.db.bean.CartBean;
 import cc.springwind.tianziyihao.db.dao.CartDao;
-import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 import cc.springwind.tianziyihao.global.BaseActivity;
+import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.ui.fragment.FragmentController;
 import cc.springwind.tianziyihao.utils.ScreenUtil;
+import cc.springwind.tianziyihao.utils.SpUtil;
 import cc.springwind.tianziyihao.utils.ToastUtil;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
@@ -80,8 +81,6 @@ public class GoodDetailActivity extends BaseActivity {
         }
     };
     private GoodDetailInfo goodDetailInfo;
-    private FakeDao fakeDao;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -224,7 +223,6 @@ public class GoodDetailActivity extends BaseActivity {
 
     protected void initData() {
         // TODO: 2016/7/26 需要被替换的数据源
-        fakeDao = new FakeDao();
         final GoodsDao dao = GoodsDao.getInstance(this);
         new Thread() {
             @Override
@@ -258,7 +256,7 @@ public class GoodDetailActivity extends BaseActivity {
                 showShare();
                 break;
             case R.id.btn_home:
-                intent2Activity(MainActivity.class);
+//                intent2Activity(MainActivity.class);
                 finish();
                 break;
             case R.id.btn_like:
@@ -266,6 +264,10 @@ public class GoodDetailActivity extends BaseActivity {
             case R.id.btn_service:
                 break;
             case R.id.tv_add_to_cart:
+                if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
+                    ToastUtil.showToast(getApplicationContext(), "请先登录呵呵!");
+                    break;
+                }
                 add2Cart();
                 break;
             case R.id.tv_buy_now:
@@ -306,23 +308,24 @@ public class GoodDetailActivity extends BaseActivity {
     }
 
     private void add2Cart() {
-        CartDao instance = CartDao.getInstance(getApplicationContext());
-        List<CartBean> all = instance.findAll();
+        CartDao dao = CartDao.getInstance(getApplicationContext());
+        List<CartBean> all = dao.findAllByPhoneNumber(SpUtil.getString(getApplicationContext(),Constants.CURRENT_USER,""));
         for (CartBean cartBean :
                 all) {
             if (id.equals(cartBean.good_id)) {
-                instance.update(id, ++cartBean.count);
+                dao.update(id, ++cartBean.count);
                 ToastUtil.showToast(getApplicationContext(), "添加到購物車:" + cartBean.count++ + "件");
                 return;
             }
         }
         CartBean info = new CartBean();
         info.count = 1;
+        info.username = SpUtil.getString(getApplicationContext(), Constants.CURRENT_USER, "");
         info.good_id = id;
         info.good_name = goodDetailInfo.good_name;
         info.good_price = goodDetailInfo.price;
         info.good_img_url = goodDetailInfo.thumbnail_img_url;
-        instance.insert(info);
+        dao.insert(info);
         ToastUtil.showToast(getApplicationContext(), "添加到購物車:1件");
     }
 

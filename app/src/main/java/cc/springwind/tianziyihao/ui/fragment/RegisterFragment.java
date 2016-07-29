@@ -18,8 +18,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
-import cc.springwind.tianziyihao.db.bean.UserDataBean;
-import cc.springwind.tianziyihao.db.dao.UserDataDao;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.global.Constants;
@@ -106,15 +104,11 @@ public class RegisterFragment extends BaseFragment {
     private void register(String phone) {
         String passwordMD5 = MD5.hexdigest(etPassword.getText().toString().trim());
         UserInfoDao userInfoDao = UserInfoDao.getInstance(getContext());
-        UserDataDao userDataDao = UserDataDao.getInstance(getContext());
         long l = userInfoDao.insert(phone, passwordMD5);
         if (l != -1) {
             ToastUtil.showToast(getContext(), "注册成功");
             SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, true);
             SpUtil.putString(getContext(), Constants.CURRENT_USER, phone);
-            UserDataBean userDataBean = new UserDataBean();
-            userDataBean.user_id = userInfoDao.queryId(phone);
-            userDataDao.insert(userDataBean);
             MainActivity mainActivity = (MainActivity) getActivity();
             FragmentManager manager = mainActivity.getSupportFragmentManager();
             // POP_BACK_STACK_INCLUSIVE 该标志位表示在后退栈里的,所有在这个找到的Fragment后面入栈的Fragment,包括这个Fragment,都会被弹出
@@ -147,7 +141,6 @@ public class RegisterFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-
         SMSSDK.unregisterAllEventHandler();
     }
 
@@ -156,8 +149,13 @@ public class RegisterFragment extends BaseFragment {
         phoneNumber = etUsername.getText().toString().trim();
         switch (view.getId()) {
             case R.id.btn_get_sms_number:
+                if (UserInfoDao.getInstance(getContext()).queryId(phoneNumber) != 0) {
+                    ToastUtil.showToast(getContext(), "手机号已注册!");
+                    break;
+                }
                 if (TextCheckUtil.isPhoneNumber(phoneNumber)) {
                     SMSSDK.getVerificationCode("86", phoneNumber);
+                    LogUtil.log(activity.TAG, this, "btn_get_sms_number");
                 } else {
                     ToastUtil.showToast(getContext(), "手机号码不正确");
                 }
@@ -173,7 +171,6 @@ public class RegisterFragment extends BaseFragment {
                     ToastUtil.showToast(getContext(), "验证码格式错误");
                     break;
                 }
-//                SMSSDK.submitVerificationCode("86", phoneNumber, etSmsNumber.getText().toString().trim());
                 register(phoneNumber);
                 break;
             case R.id.tv_get_support_contries:

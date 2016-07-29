@@ -16,10 +16,11 @@ import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.utils.SpUtil;
+import cc.springwind.tianziyihao.utils.ToastUtil;
 
 /**
  * Created by HeFan on 2016/7/7.
- * <p>
+ * <p/>
  * 用户界面
  */
 public class UserFragment extends BaseFragment {
@@ -60,10 +61,11 @@ public class UserFragment extends BaseFragment {
             for (File item : file.listFiles()) {
                 item.delete();
             }
+            ToastUtil.showToast(getContext(), "清除完毕!");
         }
     }
 
-    @OnClick({R.id.tbi_clear, R.id.btn_log_out})
+    @OnClick({R.id.tbi_clear, R.id.btn_log_out, R.id.tbi_about_us})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tbi_clear:
@@ -73,6 +75,15 @@ public class UserFragment extends BaseFragment {
                 SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, false);
                 activity.getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new LoginFragment(),
                         "LoginFragment").addToBackStack("LoginFragment").commit();
+                break;
+            case R.id.tbi_about_us:
+                ImageFragment fragment = new ImageFragment();
+                Bundle args = new Bundle();
+                args.putString("title", "信息内容");
+                args.putString("content_url", "http://ww1.sinaimg.cn/mw690/94dfe97bgw1f563jhy60mj20hs1jt79q.jpg");
+                fragment.setArguments(args);
+                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment,
+                        "ImageFragment").addToBackStack("ImageFragment").commit();
                 break;
         }
     }

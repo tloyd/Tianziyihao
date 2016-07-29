@@ -114,7 +114,7 @@ public class GoodListItem extends LinearLayout {
     }
 
     public void setTvGoodPrice(String price) {
-        tvGoodPrice.setText(price);
+        tvGoodPrice.setText("￥"+price+"/份");
     }
 
     public void setIvGoodThumb(String url) {
@@ -129,7 +129,7 @@ public class GoodListItem extends LinearLayout {
     }
 
     public void setTvGoodPriceOrigin(String str) {
-        tvGoodPriceOrigin.setText(str);
+        tvGoodPriceOrigin.setText(str+"/份");
         tvGoodPriceOrigin.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
     }
 }

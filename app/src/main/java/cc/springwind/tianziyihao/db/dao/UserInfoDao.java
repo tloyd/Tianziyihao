@@ -83,10 +83,51 @@ public class UserInfoDao {
                 " desc");
         int _id = 0;
         while (cursor.moveToNext()) {
-            _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            try {
+                _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
         }
         cursor.close();
         db.close();
         return _id;
+    }
+
+    /**
+     * 查询积分
+     *
+     * @param phone
+     * @return
+     */
+    public int queryScoreByPhoneNumber(String phone) {
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+
+        Cursor cursor = db.query("userinfo", new String[]{"score"}, "username=?", new String[]{phone}, null, null,
+                null);
+        int score = 0;
+        while (cursor.moveToNext()) {
+            score = cursor.getInt(cursor.getColumnIndex("score"));
+        }
+        cursor.close();
+        db.close();
+        return score;
+    }
+
+    /**
+     * 根据电话号码更新积分
+     *
+     * @param phone
+     * @param score
+     */
+    public void updateScoreByPhoneNumber(String phone, int score) {
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("score", score);
+        db.update("userinfo", values, "username = ?", new String[]{phone});
+
+        db.close();
     }
 }

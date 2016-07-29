@@ -76,10 +76,6 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
                              ViewGroup parent) {
         WrapHeightGridView gridView;
-        /*ViewGroup.LayoutParams params = gridView.getLayoutParams();
-        params.height= LinearLayout.LayoutParams.WRAP_CONTENT;
-        params.width=LinearLayout.LayoutParams.MATCH_PARENT;
-        gridView.setLayoutParams(params);*/
 
         if (convertView == null) {
             gridView = new WrapHeightGridView(homeFragment.getContext());

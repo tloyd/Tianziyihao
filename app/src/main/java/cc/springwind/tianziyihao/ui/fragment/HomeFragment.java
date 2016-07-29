@@ -29,7 +29,6 @@ import cc.springwind.tianziyihao.adapter.GridViewAdapter;
 import cc.springwind.tianziyihao.adapter.ViewPagerAdapter;
 import cc.springwind.tianziyihao.db.dao.FakeDao;
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
-import cc.springwind.tianziyihao.db.dao.UserDataDao;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.global.Constants;
@@ -214,7 +213,8 @@ public class HomeFragment extends BaseFragment {
         ButterKnife.reset(this);
     }
 
-    @OnClick({R.id.index_top_logo, R.id.index_search_button, R.id.btn_get_scole, R.id.btn_get_share})
+    // TODO: 2016/7/28  shape能用图片生成圆角矩形的背景吗
+    @OnClick({R.id.index_top_logo, R.id.index_search_button, R.id.btn_get_score, R.id.btn_get_share})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.index_top_logo:
@@ -236,7 +236,7 @@ public class HomeFragment extends BaseFragment {
                         "ImageFragment").addToBackStack("ImageFragment").commit();
                 break;
 
-            case R.id.btn_get_scole://签到赚积分
+            case R.id.btn_get_score://签到赚积分
                 if (SpUtil.getBoolean(getContext(), Constants.IS_LOGIN, false)) {
                     getScore();
                 } else {
@@ -296,11 +296,10 @@ public class HomeFragment extends BaseFragment {
             SpUtil.putString(getContext(), Constants.SIGN_DATE, today);
             ToastUtil.showToast(getContext(), "今日签到:积分+6");
             String phone = SpUtil.getString(getContext(), Constants.CURRENT_USER, "");
-            UserDataDao dao = UserDataDao.getInstance(getContext());
-            int id = UserInfoDao.getInstance(getContext()).queryId(phone);
-            int scole = dao.queryScoleById(id);
-            scole += 6;
-            dao.updateScoleById(id, scole);
+            UserInfoDao dao = UserInfoDao.getInstance(getContext());
+            int score = dao.queryScoreByPhoneNumber(phone);
+            score += 6;
+            UserInfoDao.getInstance(getContext()).updateScoreByPhoneNumber(phone,score);
         }
     }
 
@@ -309,11 +308,7 @@ public class HomeFragment extends BaseFragment {
      */
     private void initExpandableListView() {
         eListView = (WrapHeightExpandableListView) view.findViewById(R.id.elv_home);
-
-        /*listOfHomeGoodGroup = fakeDao.getHomeGoodLists();*/
-
         listOfHomeGoodGroup = goodsDao.getHomeGoodLists();
-
         ExpandableAdapter adapter = new ExpandableAdapter(this, listOfHomeGoodGroup);
         eListView.setAdapter(adapter);
         eListView.setGroupIndicator(null);

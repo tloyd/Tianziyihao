@@ -53,6 +53,7 @@ public class ExpandableListGridViewAdaptar extends BaseAdapter {
             goodListItem = new GoodListItem(homeFragment.getContext());
         }
         goodListItem.setTvGoodPrice(getItem(position).price);
+        goodListItem.setTvGoodPriceOrigin(getItem(position).priceOrigin);
         goodListItem.setTvGoodName(getItem(position).name);
         goodListItem.setIvGoodThumb(getItem(position).url);
         return goodListItem;

@@ -24,6 +24,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "good_name VARCHAR(20), " +
                 "good_img_url TEXT," +
                 "good_price TEXT," +
+                "username VARCHAR(20), " +
                 "count INTEGER);");
         /*db.execSQL("create table favourate " +
                 "(_id integer primary key autoincrement , " +
@@ -31,15 +32,16 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "good_name varchar(20), " +
                 "good_img_url text," +
                 "good_price text);");*/
-        /*创建用户信息表,用三个字段,_id,用户名(手机号),密码*/
+        /*创建用户信息表,用三个字段,_id,用户名(手机号),密码,积分*/
         db.execSQL("CREATE TABLE userinfo " +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT , " +
-                "username VARCHAR(20)," +
+                "username VARCHAR(20) UNIQUE," +
+                "score INTEGER DEFAULT 0, " +
                 "password VARCHAR(20));");
         /*创建用户资料表,此表用来储存用户的基本资料,如积分,昵称,性别,年纪等,当前版本只实现了积分呵呵*/
         db.execSQL("CREATE TABLE userdata " +
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT , " +
-                "scole INTEGER default 0, " +
+                "scole INTEGER DEFAULT 0, " +
                 "user_id INTEGER NOT NULL)");
         // TODO: 2016/7/24 0024 外键到底能不能用
         //FOREIGN KEY user_id REFERENCES userinfo(_id)
@@ -48,7 +50,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "BEGIN" +
                 "INSERT INTO userdata (user_id) VALUES (SELECT _id FROM userinfo)" +
                 "END");*/
-        db.execSQL("create table goods(\n" +
+        /*db.execSQL("create table goods(\n" +
                 "_id integer primary key autoincrement,\n" +
                 "first_class_id integer not null,\n" +
                 "second_class_id integer not null,\n" +
@@ -69,7 +71,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "good_id integer,\n" +
                 "data text,\n" +
                 "type integer\n" +
-                ")");
+                ")");*/
     }
 
     @Override
