@@ -77,6 +77,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "order_id integer primary key autoincrement," +
                 "username text," +
                 "sum_price real," +
+                "receive_district_code text," +
                 "receive_name text," +
                 "receive_tel text," +
                 "receive_address text," +
