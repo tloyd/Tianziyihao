@@ -87,7 +87,8 @@ public class UserFragment extends BaseFragment {
                 break;
 
             case R.id.tbi_address:
-
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new AddressFragment(),
+                        "ImageFragment").addToBackStack("ImageFragment").commit();
                 break;
         }
     }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/bg_White"
               android:orientation="vertical">
 
     <LinearLayout
@@ -51,26 +52,6 @@
 
             <EditText
                 android:id="@+id/et_district"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="地区:"/>
-
-            <EditText
-                android:id="@+id/et_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"/>
@@ -169,12 +150,14 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/btn_delect_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="删除"/>
 
         <Button
+            android:id="@+id/btn_save_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

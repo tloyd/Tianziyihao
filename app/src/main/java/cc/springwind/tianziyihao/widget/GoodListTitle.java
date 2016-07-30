@@ -13,9 +13,7 @@ import cc.springwind.tianziyihao.R;
  */
 public class GoodListTitle extends LinearLayout {
 
-    private static final String NAMESPACE = "http://schemas.android.com/apk/res-auto";
     private TextView tv_elv_group_title;
-    private TextView tv_elv_group_more;
 
     public GoodListTitle(Context context) {
         this(context, null);
@@ -29,7 +27,6 @@ public class GoodListTitle extends LinearLayout {
         super(context, attrs, defStyleAttr);
         View.inflate(context, R.layout.item_elv_group_title, this);
         tv_elv_group_title = (TextView) findViewById(R.id.tv_elv_group_title);
-        tv_elv_group_more = (TextView) findViewById(R.id.tv_elv_group_more);
     }
 
     public void setTv_elv_group_title(String title) {

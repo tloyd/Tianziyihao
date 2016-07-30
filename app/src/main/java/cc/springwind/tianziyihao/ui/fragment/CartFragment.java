@@ -77,6 +77,9 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
+    /**
+     * 初始化界面控件
+     */
     private void initUI() {
         rbCartSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -93,6 +96,9 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         tvPay.setOnClickListener(this);
     }
 
+    /**
+     * 初始化数据
+     */
     private void initData() {
         cartDao = CartDao.getInstance(getContext());
         cartCheckList = new ArrayList<>();
@@ -111,21 +117,18 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                             if (isChecked) {
                                 // TODO: 2016/7/19 0019 计算有误
                                 sum += (float) cartBeanList.get(position).count * Float.parseFloat(cartBeanList.get
-                                        (position)
-                                        .good_price);
+                                        (position).good_price);
                                 tvSum.setText(decimalFormat.format(sum) + "");
                                 cartCheckList.add(cartBeanList.get(position));
                             } else {
                                 sum -= (float) cartBeanList.get(position).count * Float.parseFloat(cartBeanList.get
-                                        (position)
-                                        .good_price);
+                                        (position).good_price);
                                 tvSum.setText(decimalFormat.format(sum) + "");
-                                cartCheckList.add(cartBeanList.remove(position));
+                                cartCheckList.remove(cartBeanList.get(position));
                             }
                         }
                     }
                 }
-
         );
         lvCart.setAdapter(cartListAdapter);
     }
@@ -197,6 +200,9 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * 结算操作
+     */
     private void getPay() {
         if (cartBeanList.size() <= 0) {
             ToastUtil.showToast(getContext(), "您还没有购买商品!");
@@ -210,14 +216,17 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         PayFragment fragment = new PayFragment();
         Bundle args = new Bundle();
 
-        args.putSerializable("cartCheckList",cartCheckList);
+        args.putSerializable("cartCheckList", cartCheckList);
 
         fragment.setArguments(args);
-        getFragmentManager().beginTransaction().add(R.id.fl_content, fragment, "PayFragment")
+        getFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, "PayFragment")
                 .addToBackStack("PayFragment").commit();
     }
 
 
+    /**
+     * 这个是内容观察者类,用于接收数据库改变的通知,在数据发生改变的时候,重新加载购物车的数据
+     */
     class InnerContentObserver extends ContentObserver {
 
         /**
@@ -240,6 +249,9 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     }
 
 
+    /**
+     * 购物车列表适配器
+     */
     class CartListAdapter extends BaseAdapter {
         private CartFragment cartFragment;
         private DecimalFormat decimalFormat;
@@ -284,8 +296,8 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
             viewHolder.tvCartItemPrice.setText(item.good_price);
             viewHolder.tvCartItemCount.setText(item.count + "");
 
-            viewHolder.tvItemSum.setText(decimalFormat.format(Float.parseFloat(item.good_price) * (float) item.count)
-                    + "");
+            viewHolder.tvItemSum.setText(decimalFormat.format(Float.parseFloat(item.good_price) *
+                    (float) item.count) + "");
 
             viewHolder.proAdd.setTag(position);
             viewHolder.proReduce.setTag(position);

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,11 +20,14 @@ import cc.springwind.tianziyihao.db.dao.AddressDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.ui.acitivity.MainActivity;
 import cc.springwind.tianziyihao.utils.LogUtil;
+import cc.springwind.tianziyihao.utils.ToastUtil;
 
 /**
  * Created by HeFan on 2016/7/29.
+ *
+ * 地址选择fragment
  */
-public class AddressFragment extends BaseFragment {
+public class AddressSelectFragment extends BaseFragment implements View.OnClickListener {
     @InjectView(R.id.lv_address)
     ListView lvAddress;
     private ArrayList<AddressBean> list;
@@ -37,28 +39,21 @@ public class AddressFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
         ((MainActivity) getActivity()).setControllBarVisible(false);
-        View view = View.inflate(getContext(), R.layout.fragment_address, null);
+        View view = View.inflate(getContext(), R.layout.fragment_address_select, null);
         ButterKnife.inject(this, view);
         initData();
         return view;
     }
 
+    /**
+     * 初始化数据
+     */
     private void initData() {
         dao = AddressDao.getInstance(getContext());
         list = dao.findAll();
         adapter = new AddressAdapter();
+        adapter.setSelectListener(this);
         lvAddress.setAdapter(adapter);
-        lvAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AddressEditFragment fragment = new AddressEditFragment();
-                Bundle args = new Bundle();
-                args.putSerializable("AddressBean", list.get(position));
-                fragment.setArguments(args);
-                getFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, "AddressEditFragment")
-                        .addToBackStack("AddressEditFragment").commit();
-            }
-        });
     }
 
     @Override
@@ -74,18 +69,38 @@ public class AddressFragment extends BaseFragment {
         ButterKnife.reset(this);
     }
 
-    @OnClick({R.id.ib_image_back, R.id.btn_add_address})
+    @Override
+    @OnClick({R.id.ib_image_back, R.id.btn_manage_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ib_image_back:
                 getFragmentManager().popBackStack();
                 break;
-            case R.id.btn_add_address:
-                AddressEditFragment fragment = new AddressEditFragment();
-                getFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, "AddressEditFragment")
-                        .addToBackStack("AddressEditFragment").commit();
+            case R.id.btn_manage_address:
+                AddressFragment fragment = new AddressFragment();
+                getFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, "AddressFragment")
+                        .addToBackStack("AddressFragment").commit();
+                break;
+            case R.id.tv_address:
+                // 当点击地址项中的选择按钮时,将该选项的数据设置给接口中的passAddress方法
+                int position = (int) view.getTag();
+                this.callback.passAddress(list.get(position));
+                getFragmentManager().popBackStack();
                 break;
         }
+    }
+
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    /**
+     * 接口Callback用于将当前选中的地址回传给调用该Fragment的对象
+     */
+    public interface Callback {
+        void passAddress(AddressBean bean);
     }
 
     class AddressAdapter extends BaseAdapter {
@@ -121,8 +136,16 @@ public class AddressFragment extends BaseFragment {
             viewHolder.tvAddressDetail.setText(item.district + item.specifiec_address);
             viewHolder.tvPhoneNumber.setText(item.receive_tel);
             viewHolder.tvReceiveUser.setText(item.receive_name);
-
+            viewHolder.tvAddress.setText("选择");
+            viewHolder.tvAddress.setTag(position);
+            viewHolder.tvAddress.setOnClickListener(selectListener);
             return convertView;
+        }
+
+        View.OnClickListener selectListener;
+
+        public void setSelectListener(View.OnClickListener selectListener) {
+            this.selectListener = selectListener;
         }
 
         class ViewHolder {

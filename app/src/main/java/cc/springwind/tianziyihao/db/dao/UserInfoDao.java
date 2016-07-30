@@ -130,4 +130,15 @@ public class UserInfoDao {
 
         db.close();
     }
+
+    public float queryAccountByUsername(String phone) {
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        float account = 0;
+        Cursor cursor = db.query("userinfo", new String[]{"account"}, "username=?", new String[]{phone}, null, null,
+                null);
+        while (cursor.moveToNext())
+            account = cursor.getFloat(cursor.getColumnIndex("account"));
+        db.close();
+        return account;
+    }
 }

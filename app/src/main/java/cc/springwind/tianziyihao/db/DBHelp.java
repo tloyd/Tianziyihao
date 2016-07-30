@@ -37,6 +37,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT , " +
                 "username VARCHAR(20) UNIQUE," +
                 "score INTEGER DEFAULT 0, " +
+                "account REAL DEFAULT 0, " +
                 "password VARCHAR(20));");
         /*创建用户资料表,此表用来储存用户的基本资料,如积分,昵称,性别,年纪等,当前版本只实现了积分呵呵*/
         db.execSQL("CREATE TABLE userdata " +
@@ -72,7 +73,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "data text,\n" +
                 "type integer\n" +
                 ")");*/
-
+        /*创建订单详情表*/
         db.execSQL("create table user_order(" +
                 "order_id integer primary key autoincrement," +
                 "username text," +
@@ -81,7 +82,18 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "receive_name text," +
                 "receive_tel text," +
                 "receive_address text," +
-                "order_flag integer," +
+                "order_flag integer" +
+                ")");
+        /*创建地址表*/
+        db.execSQL("create table address(" +
+                "address_id integer primary key autoincrement," +
+                "district text," +
+                "specifiec_address text," +
+                "receive_tel text," +
+                "receive_name text," +
+                "district_code text," +
+                "username text," +
+                "isDefault boolean default 0" +
                 ")");
     }
 
