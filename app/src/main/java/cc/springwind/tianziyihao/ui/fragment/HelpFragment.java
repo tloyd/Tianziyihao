@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.global.BaseFragment;
@@ -25,6 +26,7 @@ public class HelpFragment extends BaseFragment {
         ((MainActivity) getActivity()).setControllBarVisible(false);
         View view = View.inflate(getContext(), R.layout.fragment_help, null);
 
+        ButterKnife.inject(this, view);
         return view;
     }
 
@@ -33,6 +35,12 @@ public class HelpFragment extends BaseFragment {
         super.onDestroy();
         ((MainActivity) getActivity()).setControllBarVisible(true);
         LogUtil.log(activity.TAG, this, "onDestroy");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @OnClick(R.id.ib_image_back)

@@ -141,4 +141,14 @@ public class UserInfoDao {
         db.close();
         return account;
     }
+
+    public String queryPayPasswordByUsername(String username) {
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+        Cursor cursor = db.query("userinfo", new String[]{"pay_password"}, "username=?", new String[]{username},
+                null, null, null);
+        while (cursor.moveToNext())
+            return cursor.getString(cursor.getColumnIndex("pay_password"));
+        db.close();
+        return null;
+    }
 }

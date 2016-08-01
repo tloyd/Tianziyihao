@@ -2,6 +2,7 @@ package cc.springwind.tianziyihao.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,15 +66,17 @@ public class UserFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.tbi_clear, R.id.btn_log_out, R.id.tbi_about_us,R.id.tbi_address})
+    @OnClick({R.id.tbi_clear, R.id.btn_log_out, R.id.tbi_about_us, R.id.tbi_address, R.id.tv_favourate_fu, R.id
+            .tbi_password})
     public void onClick(View view) {
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         switch (view.getId()) {
             case R.id.tbi_clear:
                 deleteFilesByDirectory(getContext().getCacheDir());
                 break;
             case R.id.btn_log_out:
                 SpUtil.putBoolean(getContext(), Constants.IS_LOGIN, false);
-                activity.getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new LoginFragment(),
+                ft.add(R.id.fl_content, new LoginFragment(),
                         "LoginFragment").addToBackStack("LoginFragment").commit();
                 break;
             case R.id.tbi_about_us:
@@ -82,13 +85,20 @@ public class UserFragment extends BaseFragment {
                 args.putString("title", "信息内容");
                 args.putString("content_url", "http://ww1.sinaimg.cn/mw690/94dfe97bgw1f563jhy60mj20hs1jt79q.jpg");
                 fragment.setArguments(args);
-                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment,
+                ft.add(R.id.fl_content, fragment,
                         "ImageFragment").addToBackStack("ImageFragment").commit();
                 break;
-
             case R.id.tbi_address:
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new AddressFragment(),
+                ft.replace(R.id.fl_content, new AddressFragment(),
                         "ImageFragment").addToBackStack("ImageFragment").commit();
+                break;
+            case R.id.tv_favourate_fu:
+                ft.replace(R.id.fl_content, new FavourateFragment(), "FavourateFragment").addToBackStack
+                        ("FavourateFragment").commit();
+                break;
+            case R.id.tbi_password:
+                ft.replace(R.id.fl_content, new PasswordFragment(), "PasswordFragment").addToBackStack
+                        ("PasswordFragment").commit();
                 break;
         }
     }

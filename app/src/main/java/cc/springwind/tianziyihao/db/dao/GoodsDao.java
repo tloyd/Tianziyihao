@@ -114,7 +114,7 @@ public class GoodsDao implements Serializable {
                 child.name = goods.getString(goods.getColumnIndex("good_name"));
                 child.price = String.valueOf(goods.getFloat(goods.getColumnIndex("good_price")));
                 child.url = goods.getString(goods.getColumnIndex("thumbnail_img_url"));
-                child.priceOrigin=goods.getString(goods.getColumnIndex("good_price_origin"));
+                child.priceOrigin = goods.getString(goods.getColumnIndex("good_price_origin"));
 
                 childList.add(child);
             }
@@ -210,6 +210,22 @@ public class GoodsDao implements Serializable {
         cursor.close();
         db.close();
         return mList;
+    }
+
+    public GoodSimpleInfo queryGoodInfoById(String good_id) {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.query("goods", null, "good_id=?", new String[]{good_id}, null, null, null);
+        GoodSimpleInfo info = new GoodSimpleInfo();
+        while (cursor.moveToNext()) {
+            info.id = cursor.getString(cursor.getColumnIndex("good_id"));
+            info.name = cursor.getString(cursor.getColumnIndex("good_name"));
+            info.price = cursor.getFloat(cursor.getColumnIndex("good_price"));
+            info.url = cursor.getString(cursor.getColumnIndex("thumbnail_img_url"));
+            info.saleCount = cursor.getInt(cursor.getColumnIndex("sale_count"));
+        }
+        cursor.close();
+        db.close();
+        return info;
     }
 
     public class GoodSimpleInfo {

@@ -299,7 +299,7 @@ public class HomeFragment extends BaseFragment {
             UserInfoDao dao = UserInfoDao.getInstance(getContext());
             int score = dao.queryScoreByPhoneNumber(phone);
             score += 6;
-            UserInfoDao.getInstance(getContext()).updateScoreByPhoneNumber(phone,score);
+            UserInfoDao.getInstance(getContext()).updateScoreByPhoneNumber(phone, score);
         }
     }
 
@@ -321,6 +321,15 @@ public class HomeFragment extends BaseFragment {
                 ((MainActivity) getActivity()).setRgTabClick(2);
                 SpUtil.putInt(getContext(), Constants.ITEM_CLICKED, groupPosition);
                 return true;
+            }
+        });
+        // TODO: 2016/8/1 子项点击无法响应
+        eListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long
+                    id) {
+                LogUtil.log(activity.TAG, this, "setOnChildClickListener");
+                return false;
             }
         });
         setListViewHeightBasedOnChildren(eListView);

@@ -1,12 +1,14 @@
 package cc.springwind.tianziyihao.global;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.os.Environment;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.io.File;
@@ -46,7 +48,9 @@ public class BaseApplication extends Application {
                 // 设置图片下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.icon_empty) // 设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(R.drawable.icon_error) // 设置图片加载或解码过程中发生错误显示的图片
-                .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
+                .cacheInMemory(false) // 设置下载的图片是否缓存在内存中
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
                 // .displayer(new RoundedBitmapDisplayer(20)) // 设置成圆角图片
                 .build(); // 创建配置过得DisplayImageOption对象

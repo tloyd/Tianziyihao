@@ -68,7 +68,6 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         decimalFormat = new DecimalFormat("0.0");
         phoneNumber = SpUtil.getString(getContext(), Constants.CURRENT_USER, "");
         // 注册内容观察者,监听cart表变化,一旦cart表有变化,立刻更新cartInfoList
-        // TODO: 2016/7/21 这个URI是啥?
         observer = new InnerContentObserver(new Handler());
         activity.getContentResolver().registerContentObserver(Uri.parse("content://cart/change"), true, observer);
 
@@ -115,7 +114,6 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                         if (tag != null && tag instanceof Integer) {
                             int position = (Integer) tag;
                             if (isChecked) {
-                                // TODO: 2016/7/19 0019 计算有误
                                 sum += (float) cartBeanList.get(position).count * Float.parseFloat(cartBeanList.get
                                         (position).good_price);
                                 tvSum.setText(decimalFormat.format(sum) + "");

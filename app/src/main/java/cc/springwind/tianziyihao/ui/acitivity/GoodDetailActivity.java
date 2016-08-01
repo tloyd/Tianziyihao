@@ -29,6 +29,7 @@ import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.db.bean.CartBean;
 import cc.springwind.tianziyihao.db.dao.CartDao;
+import cc.springwind.tianziyihao.db.dao.FavourateDao;
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
 import cc.springwind.tianziyihao.entity.GoodDetailInfo;
 import cc.springwind.tianziyihao.global.BaseActivity;
@@ -81,6 +82,8 @@ public class GoodDetailActivity extends BaseActivity {
         }
     };
     private GoodDetailInfo goodDetailInfo;
+    private boolean exist;
+    private FavourateDao dao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,9 +91,9 @@ public class GoodDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_good_detail);
         ButterKnife.inject(this);
         id = getIntent().getStringExtra("id");
+        dao = FavourateDao.getInstance(this);
         updataUI();
         initData();
-
     }
 
     private void updataUI() {
@@ -219,16 +222,20 @@ public class GoodDetailActivity extends BaseActivity {
 
             }
         }
+        if (SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false) && (exist = dao.isExist(SpUtil
+                .getString(this, Constants.CURRENT_USER, ""), id))) {
+            btnLike.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable
+                            .star_yellow),
+                    null, null);
+        }
     }
 
     protected void initData() {
-        // TODO: 2016/7/26 需要被替换的数据源
         final GoodsDao dao = GoodsDao.getInstance(this);
         new Thread() {
             @Override
             public void run() {
                 super.run();
-//                goodDetailInfo = fakeDao.queryGoodDetailWithId(id);
                 goodDetailInfo = dao.queryGoodDetailById(id);
                 mHandler.sendEmptyMessage(0);
             }
@@ -260,6 +267,11 @@ public class GoodDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_like:
+                if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
+                    ToastUtil.showToast(getApplicationContext(), "请先登录!");
+                    break;
+                }
+                like();
                 break;
             case R.id.btn_service:
                 break;
@@ -273,6 +285,31 @@ public class GoodDetailActivity extends BaseActivity {
             case R.id.tv_buy_now:
                 break;
         }
+    }
+
+    /**
+     * 点击收藏按钮操作
+     */
+    private void like() {
+        if (exist) {
+            if (dao.delete(SpUtil.getString(getApplicationContext(),
+                    Constants.CURRENT_USER, ""), id)) {
+                ToastUtil.showToast(getApplicationContext(), "取消收藏成功!");
+                exist = false;
+                btnLike.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable
+                        .star_gray), null, null);
+            } else
+                ToastUtil.showToast(getApplicationContext(), "取消收藏失败!");
+            return;
+        }
+        if (dao.insert(SpUtil.getString(getApplicationContext(),
+                Constants.CURRENT_USER, ""), id)) {
+            ToastUtil.showToast(getApplicationContext(), "收藏成功!");
+            exist = true;
+            btnLike.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.star_yellow),
+                    null, null);
+        } else
+            ToastUtil.showToast(getApplicationContext(), "收藏失败!");
     }
 
     /**
@@ -307,9 +344,13 @@ public class GoodDetailActivity extends BaseActivity {
         oks.show(this);
     }
 
+    /**
+     * 添加至购物车
+     */
     private void add2Cart() {
         CartDao dao = CartDao.getInstance(getApplicationContext());
-        List<CartBean> all = dao.findAllByPhoneNumber(SpUtil.getString(getApplicationContext(),Constants.CURRENT_USER,""));
+        List<CartBean> all = dao.findAllByPhoneNumber(SpUtil.getString(getApplicationContext(), Constants
+                .CURRENT_USER, ""));
         for (CartBean cartBean :
                 all) {
             if (id.equals(cartBean.good_id)) {

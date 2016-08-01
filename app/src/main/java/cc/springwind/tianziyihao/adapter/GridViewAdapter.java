@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import java.util.List;
 
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
-import cc.springwind.tianziyihao.global.Constants;
 import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
 import cc.springwind.tianziyihao.ui.fragment.HomeFragment;
 import cc.springwind.tianziyihao.widget.GoodListItem;
@@ -64,7 +63,7 @@ public class GridViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(homeFragment.getContext(), GoodDetailActivity.class);
                 // TODO: 2016/7/26 点击跳转在这儿
                 intent.putExtra("id", getItem(position).id);
-                homeFragment.getActivity().startActivityForResult(intent, Constants.RETURN_TO_CART);
+                homeFragment.getActivity().startActivity(intent);
             }
         });
         return goodListItem;

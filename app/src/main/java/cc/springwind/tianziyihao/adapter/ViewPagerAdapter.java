@@ -54,6 +54,8 @@ public class ViewPagerAdapter extends PagerAdapter {
         }
         final ImageView imageView = new ImageView(fragment.getContext());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        // TODO: 2016/7/31  java.lang.OutOfMemoryError 07-31 09:09:33.402 8380-8380/cc.springwind.tianziyihao
+        // E/dalvikvm-heap: Out of memory on a 350476-byte allocation.
         imageLoader.displayImage(tag.get("small"), imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
