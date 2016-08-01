@@ -70,7 +70,7 @@ public class ImageFragment extends BaseFragment {
                 if (height < screenHeightPixels) {
                     height = screenHeightPixels;
                 }
-                // TODO: 2016/7/27 0027 是不是没有加载到布局的Layoutparams不能直接get
+                ivIfContent.getLayoutParams();
                 ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
                 params.height = height;
                 params.width = screenWidthPixels;

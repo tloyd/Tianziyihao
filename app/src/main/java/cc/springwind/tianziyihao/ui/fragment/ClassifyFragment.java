@@ -39,14 +39,14 @@ public class ClassifyFragment extends BaseFragment {
     private int mPosition;
     private FragmentTransaction ft;
     private FragmentManager manager;
-//    private ClassifyContentFragment fragment;
+    private GoodsDao dao;
+    //    private ClassifyContentFragment fragment;
 //    private Bundle args;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getData();
     }
 
     @Nullable
@@ -56,13 +56,20 @@ public class ClassifyFragment extends BaseFragment {
         View view = View.inflate(activity, R.layout.fragment_class, null);
         ButterKnife.inject(this, view);
         activity.return_flag = false;
-
+        LogUtil.log(activity.TAG, this, "onCreateView");
+        getData();
         initUI();
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LogUtil.log(activity.TAG, this, "onResume count:" + lvClassifyFirstLevel.getChildCount() + "");
+    }
+
     private void getData() {
-        GoodsDao dao = GoodsDao.getInstance(getContext());
+        dao = GoodsDao.getInstance(getContext());
         classifyGroupList = dao.getClassifyGroupList();
     }
 
@@ -90,12 +97,12 @@ public class ClassifyFragment extends BaseFragment {
                 ft.replace(R.id.fl_classify_content, fragment).commit();
             }
         });
-
+        LogUtil.log(activity.TAG, this, "create count:" + lvClassifyFirstLevel.getChildCount() + "");
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        LogUtil.log(activity.TAG, this, "onHiddenChanged:" + hidden);
+//        LogUtil.log(activity.TAG, this, "onHiddenChanged:" + hidden);
 
         if (hidden) {
             return;
@@ -103,11 +110,18 @@ public class ClassifyFragment extends BaseFragment {
 
         int position = SpUtil.getInt(getContext(), Constants.ITEM_CLICKED, -1);
         if (position != -1) {
-//            ((View) lvClassifyFirstLevel.getItemAtPosition(position)).performClick();
-            // TODO: 2016/7/26 无法得到子项并执行点击操作
-//            lvClassifyFirstLevel.getChildAt(position).performClick();
+            adapter.notifyDataSetChanged();
+            LogUtil.log(activity.TAG, this, "count:" + lvClassifyFirstLevel.getChildCount() + "");
+            mPosition = position;
+            // TODO: 2016/8/1 得到子项并且点击该项
+            lvClassifyFirstLevel.setItemChecked(mPosition, true);
             SpUtil.putInt(getContext(), Constants.ITEM_CLICKED, -1);
-        }
+        }/**/
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override

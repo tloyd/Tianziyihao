@@ -55,18 +55,20 @@ public class HomeFragment extends BaseFragment {
     private WrapHeightExpandableListView eListView;
     private List<GoodsDao.HomeGoodGroup> listOfHomeGoodGroup;
     // 设置控制播放标志位
-    private boolean isplay = true;
     private GoodsDao goodsDao;
     private List<HashMap<String, String>> list;
+    private FragmentTransaction ft;
+    private ViewPagerThread thread;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, null);
-        isplay = true;
+        ft = getActivity().getSupportFragmentManager().beginTransaction();
         initLimitGridView();
         initDots();
+        thread = new ViewPagerThread();
         initViewPager();
         initExpandableListView();
         initView();
@@ -91,14 +93,12 @@ public class HomeFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity.return_flag = false;
-
         LogUtil.debug("-->>HomeFragment", "onCreate");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        ((MainActivity) getActivity()).setControllBarVisible(true);
         LogUtil.debug("-->>HomeFragment", "onResume");
     }
 
@@ -123,11 +123,38 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         LogUtil.log(activity.TAG, this, "onHiddenChanged:" + hidden);
+        if (hidden) {
+            thread.isplay = false;
+        } else {
+            thread.isplay = true;
+        }
+        LogUtil.log(activity.TAG, this, "thread.isplay:" + thread.isplay);
+    }
 
-        if (hidden)
-            isplay = false;
-        else
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        /*LogUtil.log(activity.TAG, this, "setUserVisibleHint:" + isplay);
+        if (isVisibleToUser) {
+            //相于FragmentonResume
             isplay = true;
+            LogUtil.log(activity.TAG, this, "setUserVisibleHint:" + isplay);
+        } else {
+            //相于FragmentonPause
+            isplay = false;
+            LogUtil.log(activity.TAG, this, "setUserVisibleHint:" + isplay);
+        }*/
+    }
+
+    /**
+     * 初始化轮播图片ViewPager控件
+     */
+    private void initViewPager() {
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        viewPager.setAdapter(new ViewPagerAdapter(list, this));
+        viewPager.addOnPageChangeListener(new PageChangeListener());
+        viewPager.setCurrentItem(Integer.MAX_VALUE / 2);//默认在中间，使用户看不到边界
+        thread.start();
     }
 
     private void initView() {
@@ -144,7 +171,6 @@ public class HomeFragment extends BaseFragment {
                         imm.hideSoftInputFromWindow(v.getApplicationWindowToken(),
                                 0);
                     }
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     Bundle bundle = new Bundle();
                     bundle.putString("good_name", key);
                     ClassifyListFragment fragment = new ClassifyListFragment();
@@ -213,13 +239,13 @@ public class HomeFragment extends BaseFragment {
         ButterKnife.reset(this);
     }
 
-    // TODO: 2016/7/28  shape能用图片生成圆角矩形的背景吗
-    @OnClick({R.id.index_top_logo, R.id.index_search_button, R.id.btn_get_score, R.id.btn_get_share})
+    @OnClick({R.id.index_top_logo, R.id.index_search_button, R.id.btn_get_score, R.id.btn_get_share, R.id
+            .btn_favourate})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.index_top_logo:
                 if (!SpUtil.getBoolean(getContext(), Constants.IS_LOGIN, false)) {
-                    getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new
+                    ft.add(R.id.fl_content, new
                             LoginFragment(), "LoginFragment").addToBackStack("LoginFragment").commit();
                 } else {
                     FragmentController controller = FragmentController.getInstance(activity, R.id.fl_content);
@@ -232,7 +258,7 @@ public class HomeFragment extends BaseFragment {
                 args.putString("title", "信息内容");
                 args.putString("content_url", "http://ww1.sinaimg.cn/mw690/94dfe97bgw1f563jhy60mj20hs1jt79q.jpg");
                 fragment.setArguments(args);
-                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment,
+                ft.add(R.id.fl_content, fragment,
                         "ImageFragment").addToBackStack("ImageFragment").commit();
                 break;
 
@@ -241,13 +267,21 @@ public class HomeFragment extends BaseFragment {
                     getScore();
                 } else {
                     ToastUtil.showToast(getContext(), "请先登录！");
-                    getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_content, new
+                    ft.add(R.id.fl_content, new
                             LoginFragment(), "LoginFragment").addToBackStack("LoginFragment").commit();
                 }
                 break;
 
             case R.id.btn_get_share://分享有礼
                 showShare();
+                break;
+
+            case R.id.btn_favourate:
+                if (SpUtil.getBoolean(getContext(), Constants.IS_LOGIN, false)) {
+                    ft.add(R.id.fl_content, new FavourateFragment()).addToBackStack(null).commit();
+                } else {
+                    ToastUtil.showToast(getContext(), "请先登录！");
+                }
                 break;
         }
     }
@@ -323,7 +357,6 @@ public class HomeFragment extends BaseFragment {
                 return true;
             }
         });
-        // TODO: 2016/8/1 子项点击无法响应
         eListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long
@@ -395,35 +428,27 @@ public class HomeFragment extends BaseFragment {
         }
     }
 
-    /**
-     * 初始化轮播图片ViewPager控件
-     */
-    private void initViewPager() {
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new ViewPagerAdapter(list, this));
-        viewPager.addOnPageChangeListener(new PageChangeListener());
-        viewPager.setCurrentItem(Integer.MAX_VALUE / 2);//默认在中间，使用户看不到边界
-        //开始轮播效果
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                // TODO: 2016/7/27 0027 有的情况会停住
-                while (isplay) {
-                    try {
-                        Thread.sleep(3500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                        }
-                    });
+    class ViewPagerThread extends Thread {
+        public boolean isplay = true;
+
+        // TODO: 2016/8/1 还是不能暂停
+        @Override
+        public void run() {
+            super.run();
+            while (isplay) {
+                try {
+                    Thread.sleep(3500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                    }
+                });
             }
-        }.start();
+        }
     }
 
     /**
@@ -437,7 +462,6 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public void onPageSelected(int position) {
-            LogUtil.log(activity.TAG, this, "onPageSelected:" + position);
             position %= mBottomImages.length;
             int total = mBottomImages.length;
             for (int j = 0; j < total; j++) {

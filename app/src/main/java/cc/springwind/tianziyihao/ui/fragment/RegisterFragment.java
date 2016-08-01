@@ -68,6 +68,7 @@ public class RegisterFragment extends BaseFragment {
     private static final int SEND_SUCCESS = 1002;
     private static final int DO_REGISTER = 1003;
     private String phone;
+    private String phoneNumber;
 
     EventHandler eh = new EventHandler() {
 
@@ -112,15 +113,14 @@ public class RegisterFragment extends BaseFragment {
             MainActivity mainActivity = (MainActivity) getActivity();
             FragmentManager manager = mainActivity.getSupportFragmentManager();
             // POP_BACK_STACK_INCLUSIVE 该标志位表示在后退栈里的,所有在这个找到的Fragment后面入栈的Fragment,包括这个Fragment,都会被弹出
-            // TODO: 2016/7/21 注册成功直接返回最后一次被点击的页面
+            // TODO: 2016/7/21 注册成功直接返回最后一次被点击的页面 已解决
             manager.popBackStack("LoginFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            mainActivity.setRgTabClick(0);
+            LogUtil.log(activity.TAG, this, "mainActivity.array[1]:" + mainActivity.array[1]);
+            FragmentController.getInstance(getActivity(), R.id.fl_content).showFragment(4);
             mainActivity.setRgTabClick(mainActivity.array[1]);
-            LogUtil.debug(activity.TAG, "test");
         }
     }
 
-    private String phoneNumber;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +171,7 @@ public class RegisterFragment extends BaseFragment {
                     ToastUtil.showToast(getContext(), "验证码格式错误");
                     break;
                 }
-                register(phoneNumber);
+                SMSSDK.submitVerificationCode("86", phoneNumber, etSmsNumber.getText().toString().trim());
                 break;
             case R.id.tv_get_support_contries:
                 SMSSDK.getSupportedCountries();
@@ -179,4 +179,10 @@ public class RegisterFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((MainActivity) getActivity()).setControllBarVisible(true);
+        LogUtil.log(activity.TAG, this, "onDestroy");
+    }
 }

@@ -50,6 +50,7 @@ public class BaseApplication extends Application {
                 .showImageOnFail(R.drawable.icon_error) // 设置图片加载或解码过程中发生错误显示的图片
                 .cacheInMemory(false) // 设置下载的图片是否缓存在内存中
                 .bitmapConfig(Bitmap.Config.RGB_565)
+                .cacheOnDisk(true)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
                 // .displayer(new RoundedBitmapDisplayer(20)) // 设置成圆角图片

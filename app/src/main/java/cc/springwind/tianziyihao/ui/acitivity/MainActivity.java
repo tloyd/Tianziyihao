@@ -44,8 +44,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         super.onResume();
     }
 
-    private int preClick = 0;
-
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
@@ -77,7 +75,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 break;
             case R.id.rb_me:
                 arrayCopy(4);
-                LogUtil.debug(TAG, "last position is " + array[0]);
+                LogUtil.debug(TAG, "rb_me last position is " + array[1]);
                 if (!SpUtil.getBoolean(getApplicationContext(), Constants.IS_LOGIN, false)) {
                     /*getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new
                             LoginFragment()).commit();*/

@@ -56,7 +56,7 @@ public class UserInfoDao {
         ContentValues contentValues = new ContentValues();
         contentValues.put("username", phone);
         contentValues.put("password", password);
-        db.update("cart", contentValues, "username = ?", new String[]{phone});
+        db.update("userinfo", contentValues, "username = ?", new String[]{phone});
 
         db.close();
     }
@@ -150,5 +150,16 @@ public class UserInfoDao {
             return cursor.getString(cursor.getColumnIndex("pay_password"));
         db.close();
         return null;
+    }
+
+    public void updatePayPassword(String username, String payPassword) {
+        SQLiteDatabase db = mDBHelp.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("username", username);
+        contentValues.put("pay_password", payPassword);
+        db.update("userinfo", contentValues, "username = ?", new String[]{username});
+
+        db.close();
     }
 }

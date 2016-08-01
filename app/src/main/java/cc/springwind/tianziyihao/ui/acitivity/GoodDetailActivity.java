@@ -202,7 +202,7 @@ public class GoodDetailActivity extends BaseActivity {
                         /*if (height < screenHeightPixels) {
                             height = screenHeightPixels;
                         }*/
-                        // TODO: 2016/7/27 0027 是不是没有加载到布局的Layoutparams不能直接get
+                        // TODO: 2016/7/27 0027 没有加载到布局的Layoutparams不能直接get
                         ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
                         params.height = height;
                         params.width = screenWidthPixels;

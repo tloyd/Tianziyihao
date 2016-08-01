@@ -241,11 +241,9 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
 
             cartBeanList = cartDao.findAllByPhoneNumber(phoneNumber);
             cartListAdapter.notifyDataSetChanged();
-            // // TODO: 2016/7/29 外部类无法用notifyDataSetChanged()方法通知数据更新
             LogUtil.log(activity.TAG, this, "onChange");
         }
     }
-
 
     /**
      * 购物车列表适配器

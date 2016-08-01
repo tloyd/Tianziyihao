@@ -113,7 +113,6 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
         }
 
         setCaculateText(count, sum);
-        // TODO: 2016/7/30 Listview的高度不稳定
         setListViewHeightBasedOnChildren(lvPay);
         rgPayWay.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -252,8 +251,8 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
         fragment.setCallback(new AddressSelectFragment.Callback() {
             @Override
             public void passAddress(AddressBean bean) {
-                // TODO: 2016/7/30 回调返回的数据无法加载在UI上
                 addressBean = bean;
+
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.fl_content, fragment).addToBackStack(null).commit();

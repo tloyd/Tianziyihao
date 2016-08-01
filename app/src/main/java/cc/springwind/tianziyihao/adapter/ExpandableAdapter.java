@@ -1,13 +1,17 @@
 package cc.springwind.tianziyihao.adapter;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 
 import java.util.List;
 
 import cc.springwind.tianziyihao.db.dao.GoodsDao;
+import cc.springwind.tianziyihao.ui.acitivity.GoodDetailActivity;
 import cc.springwind.tianziyihao.ui.fragment.HomeFragment;
+import cc.springwind.tianziyihao.utils.LogUtil;
 import cc.springwind.tianziyihao.widget.GoodListTitle;
 import cc.springwind.tianziyihao.widget.WrapHeightGridView;
 
@@ -73,7 +77,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView,
                              ViewGroup parent) {
         WrapHeightGridView gridView;
 
@@ -86,11 +90,21 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         gridView.setPadding(5, 5, 5, 5);
         gridView.setNumColumns(3);
         gridView.setAdapter(new ExpandableListGridViewAdaptar(homeFragment, getGroup(groupPosition).homeGoodChildList));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(homeFragment.getActivity(), GoodDetailActivity.class);
+                int good_id = getGroup(groupPosition).homeGoodChildList.get(position).good_id;
+                LogUtil.log("-->>:", this, good_id + "");
+                intent.putExtra("id", good_id + "");
+                homeFragment.getActivity().startActivity(intent);
+            }
+        });
         return gridView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 }

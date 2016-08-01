@@ -61,7 +61,6 @@ public class GridViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(homeFragment.getContext(), GoodDetailActivity.class);
-                // TODO: 2016/7/26 点击跳转在这儿
                 intent.putExtra("id", getItem(position).id);
                 homeFragment.getActivity().startActivity(intent);
             }

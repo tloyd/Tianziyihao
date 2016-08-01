@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.ui.fragment.ImageFragment;
+import cc.springwind.tianziyihao.utils.LogUtil;
 
 /**
  * Created by HeFan on 2016/7/21 0021.
@@ -38,6 +38,8 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
+        // 需要执行这个才会销毁,不然会报内存溢出错误
     }
 
     @Override
@@ -47,15 +49,11 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        LogUtil.log("-->>:", this, "instantiateItem:" + position);
         position %= mapList.size();
         final HashMap<String, String> tag = mapList.get(position);
-        if (position < 0) {
-            position = mapList.size() + position;
-        }
         final ImageView imageView = new ImageView(fragment.getContext());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        // TODO: 2016/7/31  java.lang.OutOfMemoryError 07-31 09:09:33.402 8380-8380/cc.springwind.tianziyihao
-        // E/dalvikvm-heap: Out of memory on a 350476-byte allocation.
         imageLoader.displayImage(tag.get("small"), imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,13 +67,6 @@ public class ViewPagerAdapter extends PagerAdapter {
                         "ImageFragment").addToBackStack("ImageFragment").commit();
             }
         });
-
-        ViewParent vp = imageView.getParent();
-        if (vp != null) {
-            ViewGroup parent = (ViewGroup) vp;
-            parent.removeView(imageView);
-        }
-
         (container).addView(imageView);
         return imageView;
     }

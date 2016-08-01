@@ -36,7 +36,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT , " +
                 "username VARCHAR(20) UNIQUE," +
                 "score INTEGER DEFAULT 0, " +
-                "account REAL DEFAULT 0, " +
+                "account REAL DEFAULT 10000, " +
                 "pay_password TEXT, " +
                 "password VARCHAR(20));");
         /*创建用户资料表,此表用来储存用户的基本资料,如积分,昵称,性别,年纪等,当前版本只实现了积分呵呵*/
