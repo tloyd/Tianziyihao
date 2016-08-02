@@ -82,6 +82,7 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "receive_name text," +
                 "receive_tel text," +
                 "receive_address text," +
+                // 0代表未未付款 1代表已付款
                 "order_flag integer" +
                 ")");
         /*创建地址表*/
@@ -94,6 +95,14 @@ public class DBHelp extends SQLiteOpenHelper implements Serializable {
                 "district_code text," +
                 "username text," +
                 "isDefault boolean default 0" +
+                ")");
+        /*创建优惠券表*/
+        db.execSQL("create table coupon (_id integer primary key autoincrement," +
+                "coupon_name text," +
+                "coupon_type integer," +
+                "coupon_value real," +
+                "coupon_qualify real default 0," +
+                "username text" +
                 ")");
     }
 

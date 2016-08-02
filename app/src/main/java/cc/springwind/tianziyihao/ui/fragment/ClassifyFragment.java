@@ -113,7 +113,7 @@ public class ClassifyFragment extends BaseFragment {
             adapter.notifyDataSetChanged();
             LogUtil.log(activity.TAG, this, "count:" + lvClassifyFirstLevel.getChildCount() + "");
             mPosition = position;
-            // TODO: 2016/8/1 得到子项并且点击该项
+            // TODO: 2016/8/1 得到子项并且点击该项 应该用这个方法
             lvClassifyFirstLevel.setItemChecked(mPosition, true);
             SpUtil.putInt(getContext(), Constants.ITEM_CLICKED, -1);
         }/**/

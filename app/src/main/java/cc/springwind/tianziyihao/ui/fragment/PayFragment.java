@@ -2,9 +2,12 @@ package cc.springwind.tianziyihao.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,7 +30,10 @@ import butterknife.OnClick;
 import cc.springwind.tianziyihao.R;
 import cc.springwind.tianziyihao.db.bean.AddressBean;
 import cc.springwind.tianziyihao.db.bean.CartBean;
+import cc.springwind.tianziyihao.db.bean.Order;
 import cc.springwind.tianziyihao.db.dao.AddressDao;
+import cc.springwind.tianziyihao.db.dao.CouponDao;
+import cc.springwind.tianziyihao.db.dao.OrderDao;
 import cc.springwind.tianziyihao.db.dao.UserInfoDao;
 import cc.springwind.tianziyihao.global.BaseFragment;
 import cc.springwind.tianziyihao.global.Constants;
@@ -43,6 +50,8 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
     private static final int SELF = 0;
     private static final int ALIPAY = 1;
     private static final int WECHAT = 2;
+    @InjectView(R.id.spinner_coupon_fp)
+    Spinner spinnerCouponFp;
     private AddressItem aiPay;
     @InjectView(R.id.lv_pay)
     ListView lvPay;
@@ -73,6 +82,12 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
     private int payway = -1;
     private float account;
     private View view;
+    private String username;
+    private List<CouponDao.Coupon> couponList;
+    private CouponDao dao;
+    private CouponAdapter couponAdapter;
+    private CouponDao.Coupon coupon;
+    private FragmentTransaction ft;
 
 
     @Override
@@ -86,10 +101,10 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
-        LogUtil.log(activity.TAG, this, "onCreateView");
         ((MainActivity) getActivity()).setControllBarVisible(false);
         view = View.inflate(getContext(), R.layout.fragment_pay, null);
         ButterKnife.inject(this, view);
+        ft = getFragmentManager().beginTransaction();
         initUI();
         return view;
     }
@@ -129,6 +144,43 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
                         payway = WECHAT;
                         break;
                 }
+            }
+        });
+        final ArrayList<String> list = new ArrayList<>();
+        list.add("8:00~11:00(尽快送达)");
+        list.add("11:00~14:00");
+        list.add("14:00~18:00");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout
+                .simple_list_item_1, list);
+        spinnerHopeReceiveTime.setAdapter(adapter);
+        spinnerHopeReceiveTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                LogUtil.log(activity.TAG, this, "list.get(position):" + list.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        username = SpUtil.getString(getContext(), Constants.CURRENT_USER, "");
+        dao = CouponDao.getInstance(getContext());
+        couponList = dao.findAll(username);
+        couponAdapter = new CouponAdapter();
+        spinnerCouponFp.setAdapter(couponAdapter);
+        spinnerCouponFp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                coupon = couponList.get(position);
+                if (Float.parseFloat(tvPayMoney.getText().toString()) >= coupon.couponQuelify) {
+                    tvDiscount.setText(coupon.couponValue + "");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -282,13 +334,40 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
          *
          * */
 
+        Order order = new Order();
+        order.receive_address = addressBean.district + " " + addressBean.specifiec_address;
+        order.receive_district_code = addressBean.district_code;
+        order.receive_name = addressBean.receive_name;
+        order.receive_tel = addressBean.receive_tel;
+        order.sum_price = Float.parseFloat(tvPayMoney.getText().toString());
+        order.username = username;
+        order.order_flag=0;
+
+        /**
+         "order_id integer primary key autoincrement," +
+         "username text," +
+         "sum_price real," +
+         "receive_district_code text," +
+         "receive_name text," +
+         "receive_tel text," +
+         "receive_address text," +
+         "order_flag integer"
+         * */
+
         if (payway == SELF) {
-            account = UserInfoDao.getInstance(getContext()).queryAccountByUsername(SpUtil.getString(getContext(),
-                    Constants.CURRENT_USER, ""));
+            account = UserInfoDao.getInstance(getContext()).queryAccountByUsername(username);
             if (account <= sum) {
                 ToastUtil.showToast(getContext(), "账户余额不足,请先充值!");
                 return;
             }
+            OrderDao orderDao = OrderDao.getInstance(getContext());
+            orderDao.insert(order);
+            CheckOrderFragment fragment = new CheckOrderFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("order", order);
+            args.putSerializable("orderList", cartCheckList);
+            fragment.setArguments(args);
+            ft.replace(R.id.fl_content, fragment);
         }
         if (payway == ALIPAY) {
             return;
@@ -375,6 +454,36 @@ public class PayFragment extends BaseFragment implements View.OnClickListener {
             ViewHolder(View view) {
                 ButterKnife.inject(this, view);
             }
+        }
+    }
+
+    class CouponAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return couponList.size();
+        }
+
+        @Override
+        public CouponDao.Coupon getItem(int position) {
+            return couponList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView;
+            if (convertView == null) {
+                textView = new TextView(getContext());
+            } else {
+                textView = (TextView) convertView;
+            }
+            textView.setText(getItem(position).couponName);
+            return textView;
         }
     }
 }

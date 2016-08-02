@@ -51,7 +51,7 @@ public class AddressItem extends LinearLayout {
     }
 
     public void setItem(AddressBean bean) {
-        setTvAddressDetail(bean.specifiec_address);
+        setTvAddressDetail(bean.district+" "+bean.specifiec_address);
         setTvPhoneNumber(bean.receive_tel);
         setTvReceiveUser(bean.receive_name);
     }
